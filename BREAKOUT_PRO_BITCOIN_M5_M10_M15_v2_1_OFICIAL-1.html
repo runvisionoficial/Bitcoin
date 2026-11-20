@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BREAKOUT PRO BITCOIN · M5 M10 M15 · OFICIAL</title>
+<style>
+:root{--bg:#07111f;--panel:#101e31;--panel2:#0b1829;--line:#263b55;--text:#edf4ff;--muted:#9db0c9;--green:#24d18b;--red:#ff647c;--amber:#ffc45b;--blue:#67a9ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#07111f,#0a1728);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:1050px;margin:auto;padding:18px}.hero,.panel,.tfcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 12px 30px #0003}
+.hero{background:linear-gradient(130deg,#132a45,#0c1b2e)}h1{font-size:clamp(23px,5vw,34px);margin:0 0 5px}.sub,.muted,.small{color:var(--muted)}.sub{font-size:13px}.small{font-size:12px;line-height:1.5}
+.row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:12px;color:var(--muted)}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}
+h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.tfcard{margin:0;padding:15px;min-width:0}.signal{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:16px;margin:10px 0}.signal h2{font-size:25px;letter-spacing:1px;margin:0 0 8px}.none{color:var(--amber)}.buy{color:var(--green)}.sell{color:var(--red)}
+input,button{font:inherit}input{width:100%;background:#071525;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px;margin:5px 0 10px}
+button{border:0;border-radius:11px;padding:12px 15px;background:#244263;color:white;font-weight:700;cursor:pointer}button.primary{background:linear-gradient(90deg,#00c98a,#37d86b);color:#052117}button:disabled{opacity:.5}
+label{font-size:13px;color:var(--muted)}.checks{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.check{font-size:11px;padding:6px 8px;border-radius:8px;background:#0a192a;border:1px solid var(--line)}.ok{color:var(--green)}.bad{color:var(--red)}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}.stat strong{display:block;font-size:23px;margin:4px 0}.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:8px 5px;border-bottom:1px solid var(--line)}.tablewrap{overflow:auto}
+.progress{height:8px;background:#071525;border-radius:9px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,#00c98a,#64e27b)}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.statgrid{grid-template-columns:1fr 1fr}.wrap{padding:11px}.hero,.panel{padding:14px}}
+</style></head>
+<body><main class="wrap">
+<section class="hero">
+ <div class="row"><div><h1>BREAKOUT PRO <span class="green">BITCOIN</span></h1><div class="sub">BTC/USD · ROMPIMENTOS · M5 / M10 / M15 · ALERTAS LOCAIS</div></div><span class="pill">v2.1 OFICIAL · BTC/USD</span></div>
+ <div class="row" style="margin-top:15px"><div><b>Ativo único: BTC/USD</b><div class="small">Dados de referência: Twelve Data. Compare com a cotação da Olymp Trade antes de qualquer operação.</div></div><span id="feedState" class="pill amber">Feed desconectado</span></div>
+</section>
+
+<section class="panel" id="setup">
+ <h2>Conexão de dados</h2>
+ <label>Chave API Twelve Data (somente nesta sessão)</label><input id="apiKey" type="password" autocomplete="off" placeholder="Cole sua nova API key">
+ <div class="small">A chave não é salva no arquivo nem no armazenamento do navegador. Não use a chave que foi exposta anteriormente; gere outra.</div>
+ <button class="primary" id="start">CONECTAR E ANALISAR BTC/USD</button>
+ <div id="setupMsg" class="small"></div>
+</section>
+
+<section class="panel" id="scanner" hidden>
+ <div class="row"><h2>Monitoramento de oportunidades</h2><span id="clock" class="pill">Aguardando</span></div>
+ <div class="progress"><div class="bar" id="bar"></div></div><div class="small" id="stage">Carregando histórico...</div>
+ <div class="grid" style="margin-top:14px" id="signalGrid">
+  <article class="tfcard"><div class="row"><h3>BITCOIN · M5</h3><span class="pill">Expiração 5 min</span></div><div class="signal" id="sig5"><h2 class="none">SEM SINAL</h2><div class="small">Aguardando candle fechado.</div></div><div class="checks" id="checks5"></div></article>
+  <article class="tfcard"><div class="row"><h3>BITCOIN · M10</h3><span class="pill">Expiração 10 min</span></div><div class="signal" id="sig10"><h2 class="none">SEM SINAL</h2><div class="small">Aguardando candle fechado.</div></div><div class="checks" id="checks10"></div></article>
+  <article class="tfcard"><div class="row"><h3>BITCOIN · M15</h3><span class="pill">Expiração 15 min</span></div><div class="signal" id="sig15"><h2 class="none">SEM SINAL</h2><div class="small">Aguardando candle fechado.</div></div><div class="checks" id="checks15"></div></article>
+ </div>
+ <div class="row" style="margin-top:14px"><button id="soundOn">ATIVAR ALERTA SONORO</button><button id="soundTest">TESTAR SOM</button><span id="soundState" class="small">Som desativado.</span></div>
+</section>
+
+<section class="panel">
+ <h2>Estratégias ativas no motor</h2>
+ <div class="grid">
+  <div><h3>1. Range Breakout</h3><div class="small">Fechamento além da máxima/mínima da faixa anterior, com buffer de volatilidade.</div></div>
+  <div><h3>2. Breakout + Retest</h3><div class="small">Rompimento prévio, retorno ao nível e rejeição confirmada pelo fechamento.</div></div>
+  <div><h3>3. Bollinger Squeeze</h3><div class="small">Compressão recente de bandas seguida de fechamento fora da banda.</div></div>
+  <div><h3>4. High/Low Breakout</h3><div class="small">Rompimento do extremo do candle anterior alinhado com a tendência.</div></div>
+  <div><h3>5. Trend Pullback</h3><div class="small">Tendência EMA 9/21/50, recuo à EMA 21 e retomada com fechamento direcional.</div></div>
+  <div><h3>Confirmações</h3><div class="small">Corpo e pavio, RSI, ATR, EMA 9/21/50 e expansão de Bollinger. Exige gatilho + pelo menos 2 confirmações.</div></div>
+ </div>
+ <p class="small">Essas são hipóteses técnicas para teste, não estratégias com lucratividade comprovada. O motor não declara 100% de probabilidade.</p>
+</section>
+
+<section class="panel">
+ <h2>Desempenho por timeframe</h2>
+ <div class="small">Resultados simulados com preço de referência Twelve Data; não representam execução nem payout efetivo da Olymp Trade.</div>
+ <div class="statgrid" id="stats" style="margin-top:12px"></div>
+ <h3 style="margin-top:16px">Últimas entradas</h3><div class="tablewrap" id="log" class="small">Nenhuma entrada registrada.</div>
+ <button id="export" style="margin-top:12px">EXPORTAR CSV</button>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const TF=[5,10,15],SYMBOL='BTC/USD';
+let apiKey='',ws=null,feedLive=false,lastTick=0,history={},bars={},records=[],pending=[],audio=null,sound=false;
+try{records=JSON.parse(localStorage.getItem('bp_btc_tf_records')||'[]')}catch(e){records=[]}
+function setStage(t,p){$('stage').textContent=t;$('bar').style.width=p+'%';$('clock').textContent=new Date().toLocaleTimeString('pt-BR')}
+function say(tf,title,cls,detail,checks=[]){
+ $('sig'+tf).innerHTML=`<h2 class="${cls}">${title}</h2><div class="small">${detail}</div>`;
+ $('checks'+tf).innerHTML=checks.map(c=>`<span class="check ${c.ok?'ok':'bad'}">${c.ok?'✓':'×'} ${c.name}</span>`).join('');
+}
+function ema(v,n){if(v.length<n)return null;let k=2/(n+1),x=v.slice(0,n).reduce((a,b)=>a+b,0)/n;for(let i=n;i<v.length;i++)x=v[i]*k+x*(1-k);return x}
+function rsi(a,n=14){if(a.length<n+1)return 50;let g=0,l=0;for(let i=a.length-n;i<a.length;i++){let d=a[i].close-a[i-1].close;if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/l)}
+function atr(a,n=14){let z=[];for(let i=Math.max(1,a.length-n);i<a.length;i++){let p=a[i-1].close;z.push(Math.max(a[i].high-a[i].low,Math.abs(a[i].high-p),Math.abs(a[i].low-p)))}return z.length?z.reduce((x,y)=>x+y,0)/z.length:0}
+function bb(a,n=20){if(a.length<n)return null;let v=a.slice(-n).map(x=>x.close),m=v.reduce((x,y)=>x+y,0)/n,sd=Math.sqrt(v.reduce((x,y)=>x+(y-m)**2,0)/n);return{mid:m,up:m+2*sd,lo:m-2*sd,width:4*sd/(Math.abs(m)||1)}}
+function aggregateFiveTo(tf){
+ const src=history[5]||[],groups=new Map(),out=[],count=tf/5;
+ for(const b of src){const start=Math.floor(b.ts/(tf*60000))*(tf*60000);if(!groups.has(start))groups.set(start,[]);groups.get(start).push(b)}
+ for(const [start,g] of [...groups.entries()].sort((a,b)=>a[0]-b[0])){
+  g.sort((a,b)=>a.ts-b.ts);
+  if(g.length!==count)continue;
+  let contiguous=true;for(let i=1;i<g.length;i++)if(g[i].ts-g[i-1].ts!==300000)contiguous=false;
+  if(!contiguous||g[0].ts!==start||g[g.length-1].ts+300000!==start+tf*60000)continue;
+  out.push({ts:start,time:new Date(start).toISOString(),open:g[0].open,high:Math.max(...g.map(x=>x.high)),low:Math.min(...g.map(x=>x.low)),close:g[g.length-1].close});
+ }
+ return out;
+}
+function makeSignal(a,tf){
+ const min=Math.max(60,tf===5?40:tf===10?35:30);if(a.length<min)return{ok:false,why:'Histórico insuficiente'};
+ const i=a.length-1,c=a[i],range=c.high-c.low;if(range<=0)return{ok:false,why:'Candle inválido'};
+ const look=tf===5?12:tf===10?10:8,prev=a.slice(i-look,i),hi=Math.max(...prev.map(x=>x.high)),lo=Math.min(...prev.map(x=>x.low));
+ const av=atr(a.slice(0,-1)),buf=Math.max(av*.08,c.close*.00008);
+ let trigger=null;
+ if(c.close>hi+buf&&c.close>c.open)trigger={dir:'COMPRA',name:'Range Breakout',level:hi};
+ if(c.close<lo-buf&&c.close<c.open)trigger={dir:'VENDA',name:'Range Breakout',level:lo};
+ // Retest after a confirmed breakout in the immediately preceding 1-3 candles.
+ for(let j=i-1;!trigger&&j>=Math.max(look,i-3);j--){
+  const base=a.slice(j-look,j),rh=Math.max(...base.map(x=>x.high)),rl=Math.min(...base.map(x=>x.low)),p=a[j];
+  if(p.close>rh+buf&&c.low<=rh+av*.2&&c.close>rh+buf&&c.close>c.open)trigger={dir:'COMPRA',name:'Breakout + Retest',level:rh};
+  if(p.close<rl-buf&&c.high>=rl-av*.2&&c.close<rl-buf&&c.close<c.open)trigger={dir:'VENDA',name:'Breakout + Retest',level:rl};
+ }
+ // Previous-candle extreme break with trend alignment.
+ const cls=a.map(x=>x.close),e9=ema(cls.slice(-100),9),e21=ema(cls.slice(-120),21),e50=ema(cls.slice(-150),50);
+ const trendUp=e9!==null&&e21!==null&&e50!==null&&e9>e21&&e21>e50,trendDn=e9!==null&&e21!==null&&e50!==null&&e9<e21&&e21<e50;
+ if(!trigger&&c.close>a[i-1].high+buf&&trendUp)trigger={dir:'COMPRA',name:'High/Low Breakout + tendência',level:a[i-1].high};
+ if(!trigger&&c.close<a[i-1].low-buf&&trendDn)trigger={dir:'VENDA',name:'High/Low Breakout + tendência',level:a[i-1].low};
+ // Bollinger squeeze: narrow recent width percentile then expansion outside the band.
+ const widths=[];for(let k=Math.max(20,i-40);k<i;k++){const z=bb(a.slice(0,k+1));if(z)widths.push(z.width)}
+ const band=bb(a.slice(0,i));const squeezed=widths.length>=10&&band&&band.width<=[...widths].sort((x,y)=>x-y)[Math.floor(widths.length*.25)];
+ if(!trigger&&squeezed&&band&&c.close>band.up&&c.close>c.open)trigger={dir:'COMPRA',name:'Bollinger Squeeze',level:band.up};
+ if(!trigger&&squeezed&&band&&c.close<band.lo&&c.close<c.open)trigger={dir:'VENDA',name:'Bollinger Squeeze',level:band.lo};
+ // Trend pullback: previous bar touches EMA21 area, current closes through prior high/low.
+ if(!trigger&&trendUp&&e21&&a[i-1].low<=e21+av*.15&&c.close>a[i-1].high+buf)trigger={dir:'COMPRA',name:'Trend Pullback EMA21',level:e21};
+ if(!trigger&&trendDn&&e21&&a[i-1].high>=e21-av*.15&&c.close<a[i-1].low-buf)trigger={dir:'VENDA',name:'Trend Pullback EMA21',level:e21};
+ if(!trigger)return{ok:false,why:'Nenhum gatilho estrutural confirmado'};
+ const bull=trigger.dir==='COMPRA',body=Math.abs(c.close-c.open)/range,wick=bull?(c.high-c.close)/range:(c.close-c.low)/range;
+ const rv=rsi(a),atrExp=av>0&&range>=av*1.05,emaAlign=bull?trendUp:trendDn,bandExp=!!band&&(bull?c.close>band.up:c.close<band.lo);
+ const checks=[
+  {name:'Corpo ≥ 55%',ok:body>=.55},
+  {name:'Pavio contrário ≤ 30%',ok:wick<=.30},
+  {name:'RSI direcional',ok:bull?rv>=52&&rv<=78:rv<=48&&rv>=22},
+  {name:'ATR em expansão',ok:atrExp},
+  {name:'EMA 9/21/50 alinhadas',ok:emaAlign},
+  {name:'Expansão Bollinger',ok:bandExp}
+ ];
+ const n=checks.filter(x=>x.ok).length;
+ return{ok:n>=2,dir:trigger.dir,name:trigger.name,level:trigger.level,checks,n,price:c.close,time:c.time,why:n>=2?`Gatilho + ${n}/6 confirmações`:`Confluência insuficiente (${n}/6)`};
+}
+function persist(){try{localStorage.setItem('bp_btc_tf_records',JSON.stringify(records.slice(-1000)))}catch(e){}}
+function stats(){
+ $('stats').innerHTML=TF.map(tf=>{let a=records.filter(x=>x.tf===tf&&['WIN','LOSS','DRAW'].includes(x.status)),w=a.filter(x=>x.status==='WIN').length,l=a.filter(x=>x.status==='LOSS').length,d=a.filter(x=>x.status==='DRAW').length,n=w+l+d;return `<div class="stat"><b>M${tf}</b><strong>${n?(w/n*100).toFixed(1)+'%':'—'}</strong><span class="small">${n} resolvidas · ${w} vitórias · ${l} derrotas · ${d} empates</span></div>`}).join('');
+ const recent=records.slice(-25).reverse();$('log').innerHTML=recent.length?`<table><thead><tr><th>TF</th><th>Direção</th><th>Estratégia</th><th>Entrada</th><th>Saída</th><th>Resultado</th></tr></thead><tbody>${recent.map(x=>`<tr><td>M${x.tf}</td><td>${x.dir}</td><td>${x.name}</td><td>${x.entry??'—'}</td><td>${x.exit??'—'}</td><td>${x.status}</td></tr>`).join('')}</tbody></table>`:'Nenhuma entrada registrada.';persist();
+}
+function soundAlert(){if(!sound||!audio)return;const t=audio.currentTime;[0,.2,.4].forEach((d,i)=>{let o=audio.createOscillator(),g=audio.createGain();o.frequency.value=i===1?1046:880;g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(.15,t+d+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d+.16);o.connect(g);g.connect(audio.destination);o.start(t+d);o.stop(t+d+.18)})}
+function registerSignal(tf,v,nextStart){
+ const exists=records.some(x=>x.tf===tf&&x.signalTime===v.time);if(exists)return;
+ const t={tf,dir:v.dir,name:v.name,signalTime:v.time,signalPrice:v.price,entryBucket:nextStart,entry:null,exit:null,status:'AGUARDANDO',created:Date.now(),confirmations:v.n};
+ records.push(t);pending.push(t);stats();soundAlert();
+}
+function onClosed(tf,b,nextStart){
+ const a=history[tf]||[];if(a.some(x=>x.ts===b.ts))return;
+ a.push(b);history[tf]=a.slice(-400);
+ const liveOk=feedLive&&Date.now()-lastTick<20000,windowOk=Date.now()-nextStart<=10000;
+ settle(tf,b);
+ const v=makeSignal(a,tf);
+ if(!liveOk||!windowOk){say(tf,'M'+tf+' · SEM SINAL','none',!liveOk?'Feed não está atualizado.':'Janela da próxima vela passou; oportunidade descartada.');return}
+ if(v.ok){say(tf,'M'+tf+' · '+v.dir,v.dir==='COMPRA'?'buy':'sell',`${v.name} · Próxima vela M${tf} · Ref. ${v.price} · ${v.n}/6 confirmações · ${v.time}`,v.checks);registerSignal(tf,v,nextStart)}
+ else say(tf,'M'+tf+' · SEM SINAL','none',v.why,v.checks||[]);
+}
+function settle(tf,b){
+ const t=pending.find(x=>x.tf===tf&&x.status==='ABERTA'&&x.entryBucket===b.ts);if(!t)return;
+ t.exit=b.close;const d=t.exit-t.entry;t.status=Math.abs(d)<1e-10?'DRAW':((t.dir==='COMPRA'&&d>0)||(t.dir==='VENDA'&&d<0))?'WIN':'LOSS';stats();
+}
+function capture(tf,bucket,price){const t=pending.find(x=>x.tf===tf&&x.status==='AGUARDANDO'&&x.entryBucket===bucket);if(t){t.entry=price;t.status='ABERTA';stats()}}
+function updateBar(tf,price,ts){
+ const bucket=Math.floor(ts/(tf*60000))*tf*60000;let b=bars[tf];
+ if(!b)bars[tf]={ts:bucket,time:new Date(bucket).toISOString(),open:price,high:price,low:price,close:price};
+ else if(bucket===b.ts){b.high=Math.max(b.high,price);b.low=Math.min(b.low,price);b.close=price}
+ else if(bucket>b.ts){onClosed(tf,b,bucket);bars[tf]={ts:bucket,time:new Date(bucket).toISOString(),open:price,high:price,low:price,close:price}}
+ capture(tf,bucket,price);
+}
+async function loadHistory(){
+ const u=new URL('https://api.twelvedata.com/time_series');u.searchParams.set('symbol',SYMBOL);u.searchParams.set('interval','5min');u.searchParams.set('outputsize','240');u.searchParams.set('timezone','UTC');u.searchParams.set('order','ASC');u.searchParams.set('apikey',apiKey);
+ const r=await fetch(u),j=await r.json();if(!r.ok||j.status==='error'||!Array.isArray(j.values))throw Error(j.message||'Falha ao carregar candles M5');
+ const now=Date.now();history[5]=j.values.map(x=>{let ts=Date.parse(x.datetime.replace(' ','T')+'Z');return{ts,time:new Date(ts).toISOString(),open:+x.open,high:+x.high,low:+x.low,close:+x.close}}).filter(x=>x.ts+300000<=now&&[x.open,x.high,x.low,x.close].every(Number.isFinite));
+ history[10]=aggregateFiveTo(10);history[15]=aggregateFiveTo(15);
+ if(history[5].length<60||history[10].length<30||history[15].length<30)throw Error('Histórico insuficiente para todos os timeframes.');
+}
+function connect(){
+ ws=new WebSocket('wss://ws.twelvedata.com/v1/quotes/price?apikey='+encodeURIComponent(apiKey));
+ ws.onopen=()=>{ws.send(JSON.stringify({action:'subscribe',params:{symbols:SYMBOL}}));$('feedState').textContent='WebSocket conectado';$('feedState').className='pill amber'};
+ ws.onmessage=e=>{let m;try{m=JSON.parse(e.data)}catch{return}
+  if(m.event==='price'&&String(m.symbol||'').toUpperCase().replace(/\s/g,'')==='BTC/USD'&&Number.isFinite(+m.price)){
+   const ts=(+m.timestamp||Date.now()/1000)*1000;lastTick=Date.now();feedLive=true;$('feedState').textContent='BTC/USD · LIVE';$('feedState').className='pill green';
+   TF.forEach(tf=>updateBar(tf,+m.price,ts));
+  }
+  if(m.event==='subscribe-status'&&Array.isArray(m.fails)&&m.fails.length){$('feedState').textContent='Assinatura recusada';$('feedState').className='pill red'}
+  if(m.event==='error'){$('feedState').textContent='Erro: '+(m.message||'feed');$('feedState').className='pill red'}
+ };
+ ws.onerror=()=>{$('feedState').textContent='Erro WebSocket';$('feedState').className='pill red'};
+ ws.onclose=()=>{feedLive=false;$('feedState').textContent='Feed desconectado';$('feedState').className='pill red'};
+}
+async function start(){
+ apiKey=$('apiKey').value.trim();if(!apiKey){$('setupMsg').textContent='Informe a chave Twelve Data.';return}
+ $('setup').hidden=true;$('scanner').hidden=false;setStage('Carregando histórico M5 e agregando M10/M15...',10);
+ try{await loadHistory();TF.forEach(tf=>say(tf,'M'+tf+' · SEM SINAL','none','Histórico carregado. Aguardando confirmação ao vivo.'));setStage('Histórico carregado. Conectando ao feed BTC/USD...',70);connect();setStage('Aguardando primeiro tick BTC/USD...',90)}
+ catch(e){$('setupMsg').textContent=e.message;$('setup').hidden=false;$('scanner').hidden=true}
+}
+$('start').onclick=start;
+$('soundOn').onclick=async()=>{try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();await audio.resume();sound=true;$('soundState').textContent='Alertas sonoros ativados.';soundAlert()}catch(e){$('soundState').textContent='Áudio indisponível: '+e.message}};
+$('soundTest').onclick=()=>{if(!audio){$('soundState').textContent='Ative o alerta sonoro primeiro.';return}soundAlert();$('soundState').textContent='Som de teste reproduzido.'};
+$('export').onclick=()=>{const rows=[['TF','Direcao','Estrategia','Sinal UTC','Entrada','Saida','Resultado'],...records.map(x=>[x.tf,x.dir,x.name,x.signalTime,x.entry??'',x.exit??'',x.status])];const csv=rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='breakout_btc_m5_m10_m15.csv';a.click();URL.revokeObjectURL(a.href)};
+setInterval(()=>{if(feedLive&&Date.now()-lastTick>20000){feedLive=false;$('feedState').textContent='Feed atrasado · sinais bloqueados';$('feedState').className='pill red';TF.forEach(tf=>say(tf,'M'+tf+' · SEM SINAL','none','Feed sem atualização há mais de 20 segundos.'))}},5000);
+setInterval(()=>$('clock').textContent=new Date().toLocaleTimeString('pt-BR'),1000);
+stats();
+</script></body></html>
