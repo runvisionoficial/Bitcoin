@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WOLF Trading Terminal V6 — M5 Market Intelligence</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{--bg:#080d14;--panel:#101925;--panel2:#0b131e;--line:#243346;--txt:#e8eef7;--muted:#91a1b4;--green:#19c58b;--red:#ff6678;--gold:#e0b65e;--blue:#70adff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1a2c43,#080d14 55%);color:var(--txt);font:14px Inter,system-ui,Arial}.wrap{max-width:1600px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.brand{display:flex;gap:12px;align-items:center}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(140deg,#f0c56b,#72501b);display:grid;place-items:center;color:#111;font-size:23px;font-weight:900}.brand h1{margin:0;font-size:19px;letter-spacing:2px}.brand small,.muted,.note{color:var(--muted)}.brand small{font-size:10px;letter-spacing:1.6px}.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}.dot.ok{background:var(--green)}.dot.err{background:var(--red)}.panel{background:linear-gradient(180deg,#111b29,#0e1621);border:1px solid var(--line);border-radius:13px;padding:13px;min-width:0}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.toolbar select,.toolbar input,.settings input,.risk input{background:#09121d;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px}button{background:#1a293b;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--txt);cursor:pointer}button:hover{border-color:var(--blue)}button.active,button.primary{background:#174a3c;border-color:#247b62}.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.8fr);gap:13px}.stack{display:flex;flex-direction:column;gap:13px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 11px;font-size:12px;letter-spacing:1px;text-transform:uppercase}.assets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.asset{background:#0a131e;border:1px solid var(--line);border-radius:10px;padding:9px;cursor:pointer;min-width:0}.asset.selected{border-color:var(--blue);box-shadow:0 0 0 1px #70adff33}.assethead{display:flex;justify-content:space-between;gap:4px;font-weight:700;font-size:12px}.assetprice{font-size:15px;font-weight:750;margin:7px 0 2px;overflow:hidden;text-overflow:ellipsis}.assetmeta{font-size:10px;color:var(--muted)}.spark{height:54px;margin-top:5px}.pill{font-size:9px;padding:4px 6px;border-radius:20px;background:#273446;color:#c5d2e0;white-space:nowrap}.pill.up{background:#123c32;color:#73e3b9}.pill.down{background:#451f29;color:#ff9ba8}.pill.wait{background:#40351f;color:#f0ce7c}.charthead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.bigprice{font-size:23px;font-weight:800}.chart{height:390px;width:100%;margin-top:8px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.kpi{background:#0a131e;border:1px solid var(--line);border-radius:9px;padding:9px}.kpi span{font-size:9px;color:var(--muted);text-transform:uppercase}.kpi strong{display:block;margin-top:5px;font-size:16px}.signal{background:#0a131e;border:1px solid var(--line);border-radius:10px;padding:12px}.signal h3{margin:9px 0 4px;font-size:17px}.signal p{font-size:12px;color:var(--muted);line-height:1.5;margin:5px 0}.meter{height:5px;background:#263548;border-radius:9px;overflow:hidden;margin:10px 0}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--green))}.settings{display:grid;grid-template-columns:1fr auto;gap:7px}.settings input{width:100%;min-width:0}.note{font-size:10px;line-height:1.5}.rows{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #1e2b3b;font-size:11px}.risk{display:grid;grid-template-columns:1fr 1fr;gap:8px}.risk label{font-size:10px;color:var(--muted)}.risk input{display:block;width:100%;margin-top:5px}.history{width:100%;border-collapse:collapse;font-size:10px}.history th,.history td{text-align:left;padding:8px 5px;border-bottom:1px solid #1d2a3a;white-space:nowrap}.history th{color:var(--muted);font-weight:500}.uptext{color:var(--green)}.downtext{color:var(--red)}.toast{position:fixed;bottom:16px;right:16px;max-width:340px;background:#1b2b3d;border:1px solid #3b5674;border-radius:10px;padding:12px;display:none;z-index:10}.toast.show{display:block}.footer{text-align:center;color:#718197;font-size:10px;padding:16px}.checks{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:var(--muted)}.mtfgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.lab-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.lab-controls label{font-size:11px;color:var(--muted)}.lab-controls input{width:100%;margin-top:5px}.lab-result{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}.lab-stat{background:#0a131e;border:1px solid var(--line);border-radius:8px;padding:9px}.lab-stat span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase}.lab-stat b{display:block;margin-top:5px;font-size:15px}.scanner-list{display:grid;gap:7px}.evidence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}.evidence-stat{background:#0a131e;border:1px solid var(--line);border-radius:8px;padding:9px}.evidence-stat span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase}.evidence-stat b{display:block;margin-top:5px;font-size:14px}.report-table{width:100%;border-collapse:collapse;font-size:11px}.report-table th,.report-table td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.quote-grid{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.quote-grid label{font-size:11px;color:var(--muted)}.quote-grid input{width:100%;margin-top:5px}@media(max-width:650px){.evidence-grid{grid-template-columns:1fr 1fr}}.scanner-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px;border-bottom:1px solid var(--line);font-size:11px}.scanner-row:last-child{border-bottom:0}@media(max-width:650px){.lab-controls{grid-template-columns:1fr 1fr}.lab-controls button{grid-column:1/-1}.lab-result{grid-template-columns:1fr 1fr}}.mtfbox{background:#0a131e;border:1px solid var(--line);border-radius:9px;padding:10px;min-width:0}.mtfbox span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}.mtfbox strong{display:block;margin-top:6px;font-size:13px}.mtfbox small{display:block;margin-top:5px;font-size:10px;color:var(--muted);line-height:1.4}@media(max-width:650px){.mtfgrid{grid-template-columns:1fr}}@media(max-width:1050px){.layout{grid-template-columns:1fr}.assets{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.wrap{padding:9px}.assets{grid-template-columns:repeat(2,1fr)}.chart{height:310px}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style></head><body><div class="wrap">
+<header class="top"><div class="brand"><div class="logo">W</div><div><h1>WOLF TRADING TERMINAL</h1><small>MARKET INTELLIGENCE • PRICE ACTION • RISK CONTROL</small></div></div><div class="status"><i class="dot" id="dot"></i><span id="status">AGUARDANDO CONEXÃO</span><span>•</span><span>V6.0 M5 MARKET INTELLIGENCE</span></div></header>
+<div class="toolbar"><span class="pill">TIMEFRAME FIXO: M5</span><button id="scan" class="primary">Iniciar monitoramento</button><button id="notify">Ativar notificações</button><button id="sound">Som: desligado</button><span class="muted" id="cycle">Scanner parado</span></div>
+<div class="panel" style="margin-bottom:13px"><h2 class="section-title">Radar de ativos <span class="pill" id="radarState">5 ATIVOS</span></h2><div class="assets" id="assets"></div><p class="note">Selecione um ativo para ampliar o gráfico. O motor consulta candles M5 nos cinco ativos e utiliza ticks WebSocket para monitorar retrações intrabar quando o plano permitir. A frequência efetiva depende da cota e dos limites da Twelve Data.</p></div>
+<div class="layout"><main class="stack"><section class="panel"><div class="charthead"><div><div class="bigprice" id="price">—</div><div class="muted" id="priceMeta">Selecione conexão e inicie o monitoramento</div></div><div><b id="selected">BTC/USD</b> <span class="pill" id="tfLabel">M5</span></div></div><div id="mainChart" class="chart"></div><div class="kpis"><div class="kpi"><span>RSI 14 (gráfico)</span><strong id="rsi">—</strong></div><div class="kpi"><span>Tendência do gráfico</span><strong id="trend">—</strong></div><div class="kpi"><span>ATR 14</span><strong id="atr">—</strong></div><div class="kpi"><span>Confluência M5</span><strong id="score">—</strong></div></div><div class="mtfgrid"><div class="mtfbox"><span>Contexto M5</span><strong id="mtfContext">Aguardando dados</strong><small id="mtfContextMeta">Tendência estrutural</small></div><div class="mtfbox"><span>Sinal M5</span><strong id="mtfTrigger">Aguardando dados</strong><small id="mtfTriggerMeta">Confluências de entrada</small></div><div class="mtfbox"><span>Decisão MTF</span><strong id="mtfDecision">AGUARDAR</strong><small id="mtfDecisionMeta">M5 define contexto e gatilho</small></div></div><p class="note">Todas as estratégias e confluências são calculadas exclusivamente no M5. Somente 5/6 ou 6/6 geram entrada; volatilidade extrema ou comprimida bloqueia alertas. Pontuação não é probabilidade de vitória. Sinais são avaliados com candles fechados.</p></section>
+<section class="panel"><h2 class="section-title">Diário de alertas <button id="clear">Limpar histórico</button></h2><div style="overflow:auto"><table class="history"><thead><tr><th>Horário</th><th>Ativo</th><th>TF</th><th>Direção</th><th>Estratégias</th><th>Pontos</th></tr></thead><tbody id="history"><tr><td colspan="6" class="muted">Nenhum alerta registrado.</td></tr></tbody></table></div></section></main>
+<aside class="stack"><section class="panel"><h2 class="section-title">Central de sinais <span class="pill" id="count">0 alertas</span></h2><div class="signal"><div class="charthead"><b id="sigAsset">BTC/USD</b><span class="pill wait" id="sigState">AGUARDANDO</span></div><h3 id="sigDirection">Sem sinal confirmado</h3><p id="sigReason">Conecte a fonte de dados para iniciar a leitura dos ativos.</p><div class="meter"><i id="meter" style="width:0%"></i></div><p id="sigFoot">Nenhuma taxa de acerto é presumida.</p></div><p class="note">Alertas informativos. O filtro de volatilidade bloqueia extremos estatísticos. Compare manualmente a cotação, payout e regras da Olymptrade antes de qualquer operação. Não há execução automática.</p></section>
+<section class="panel"><h2 class="section-title">Scanner de oportunidades <span class="pill" id="scannerCount">0 elegíveis</span></h2><div class="scanner-list" id="scannerList"><div class="muted">Aguardando dados M5 e M5 dos ativos.</div></div><p class="note">O radar ordena configurações por confluência. Somente 5/6 ou 6/6 alinhados ao contexto M5 podem gerar alerta.</p></section>
+<section class="panel"><h2 class="section-title">News & Economic Intelligence <span class="pill" id="newsStatus">SEM CONEXÃO</span></h2><div class="settings"><input id="newsKey" type="password" placeholder="Finnhub API Token (separado)" autocomplete="off"><button class="primary" id="saveNewsKey">Salvar token</button></div><div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button id="refreshNews">Atualizar notícias</button><button id="refreshCalendar">Calendário econômico</button></div><h3 style="font-size:12px;margin:14px 0 7px">Notícias relevantes</h3><div id="newsFeed" class="scanner-list"><div class="muted">Configure um token Finnhub para carregar manchetes de Forex, cripto e mercado global.</div></div><h3 style="font-size:12px;margin:14px 0 7px">Eventos econômicos</h3><div id="economicFeed" class="scanner-list"><div class="muted">Calendário econômico requer disponibilidade do endpoint no plano Finnhub.</div></div><p class="note">Notícias e calendário são fontes externas. O sistema não interpreta manchetes como sinal automático; eventos de alto impacto podem ser marcados para cautela. Confirme horário, país, impacto e fonte original.</p></section>
+<section class="panel"><h2 class="section-title">Movimentação de mercado — M5</h2><div class="scanner-list" id="movementList"><div class="muted">Aguardando candles M5.</div></div><p class="note" id="movementNote">Variação M5, deslocamento de 3 candles, ATR, amplitude e regime de volatilidade. Volume só será mostrado quando a fonte fornecer esse campo.</p><div class="rows"><span>Ticks</span><b id="tickState">WebSocket não conectado</b></div></section>
+<section class="panel"><h2 class="section-title">WOLF Evidence Lab <span class="pill">V5</span></h2><div class="lab-controls"><label>Payout (%)<input id="btPayout" type="number" min="1" max="100" value="80"></label><label>Expiração (candles M5)<input id="btExpiry" type="number" min="1" max="5" value="1"></label><button class="primary" id="runBacktest">Executar validação</button></div><div class="evidence-grid"><div class="evidence-stat"><span>Trades OOS</span><b id="btTrades">—</b></div><div class="evidence-stat"><span>Acerto OOS</span><b id="btWin">—</b></div><div class="evidence-stat"><span>Expectativa</span><b id="btExpect">—</b></div><div class="evidence-stat"><span>Profit Factor</span><b id="btPF">—</b></div><div class="evidence-stat"><span>Drawdown máx.</span><b id="btDD">—</b></div><div class="evidence-stat"><span>Resultado OOS</span><b id="btNet">—</b></div><div class="evidence-stat"><span>Taxa equilíbrio</span><b id="btBE">—</b></div><div class="evidence-stat"><span>Ativos testados</span><b id="btAssets">—</b></div></div><p class="note" id="btNote">Validação cronológica M5: 70% desenvolvimento e 30% fora da amostra. Entrada simulada na abertura do candle seguinte ao sinal; resultado no fechamento da expiração.</p><div style="overflow:auto;margin-top:10px"><table class="report-table"><thead><tr><th>Ativo</th><th>Trades OOS</th><th>Win rate</th><th>Expectativa</th><th>PF</th></tr></thead><tbody id="btByAsset"><tr><td colspan="5" class="muted">Execute a validação para gerar o relatório.</td></tr></tbody></table></div><div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button id="exportReport">Exportar relatório CSV</button><button id="weeklyReport">Resumo semanal</button></div><p class="note" id="weeklyNote">Relatório semanal baseado nos alertas registrados localmente.</p></section>
+<section class="panel"><h2 class="section-title">Verificação de cotação Olymptrade</h2><div class="quote-grid"><label>Cotação exibida na Olymptrade<input id="brokerQuote" type="number" step="any" placeholder="Digite a cotação atual"></label><button id="compareQuote">Comparar</button></div><div class="rows"><span>Referência Twelve Data</span><b id="refQuote">—</b></div><div class="rows"><span>Diferença percentual</span><b id="quoteDelta">—</b></div><p class="note" id="quoteNote">Comparação manual: informe a cotação vista na Olymptrade para o ativo selecionado. Não há conexão direta com o feed da corretora. Diferenças de fonte, OTC, spread e horário podem tornar ativos não equivalentes.</p></section>
+<section class="panel"><h2 class="section-title">Conexão Twelve Data — M5</h2><div class="settings"><input id="key" type="password" placeholder="API Key" autocomplete="off"><button class="primary" id="save">Salvar chave</button></div><div class="rows"><span>Fonte</span><b>REST candles M5 + WebSocket de preço</b></div><div class="rows"><span>Ativos</span><b>5 monitorados</b></div><div class="rows"><span>Última atualização</span><b id="updated">—</b></div><div class="rows"><span>Estado dos dados</span><b id="dataState">Não conectado</b></div><p class="note">A chave Twelve Data e o token Finnhub são guardados no IndexedDB deste navegador. Em uma aplicação puramente local, ela pode ser vista por quem tiver acesso ao navegador ou ao código executado. Não publique o arquivo com a chave preenchida.</p></section>
+<section class="panel"><h2 class="section-title">Gestão de risco</h2><div class="risk"><label>Limite diário de alertas<input id="maxAlerts" type="number" min="1" max="100" value="12"></label><label>Pausa após perdas (manual)<input id="lossStop" type="number" min="1" max="10" value="3"></label></div><div class="rows"><span>Alertas hoje</span><b id="today">0</b></div><div class="rows"><span>Modo</span><b>Somente análise</b></div><p class="note">O sistema não conhece o saldo nem o resultado financeiro da corretora. O limite é operacional e não bloqueia ordens externas.</p></section>
+<section class="panel"><h2 class="section-title">Motores ativos</h2><div class="checks"><span>✓ EMA 9/21/200</span><span>✓ RSI 14</span><span>✓ Bollinger 20/2</span><span>✓ ATR 14</span><span>✓ BOS / CHoCH</span><span>✓ Divergência RSI</span><span>✓ FVG / Order Block</span><span>✓ Motor MTF com filtro 5/6</span></div><p class="note">Confluências organizadas em seis pilares independentes. O backtest usa somente histórico carregado e parâmetros explícitos; valide os dados e a execução na corretora antes de qualquer uso real.</p></section></aside></div><div class="footer">WOLF V6 • Ferramenta de análise e estudo. Alertas exigem 5/6 ou 6/6; backtests são históricos e não garantem resultados futuros.</div></div><div class="toast" id="toast"></div>
+<script>
+(()=>{'use strict';const $=id=>document.getElementById(id),SYMBOLS=['BTC/USD','EUR/USD','GBP/USD','USD/JPY','AUD/USD'];let db,apiKey='',selected='BTC/USD',tf='5min',soundOn=false,running=false,timer=null,busy=false,mainChart=null,candleSeries=null,emaSeries=[],miniCharts={},cache={},latestSignals=[],lastKeys=new Set(),lastCycle=0,mtfCursor=0,newsKey='',newsTimer=null,economicEvents=[],ws=null,wsHeartbeat=null,reconnectTimer=null,retracementSetups={},liveCandles={};const DB='wolf_terminal_db',STORE='records';
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3600)}function status(s,type=''){ $('status').textContent=s;$('dot').className='dot '+type;$('dataState').textContent=s }
+function openDB(){return new Promise((resolve,reject)=>{let r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{let d=r.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id',autoIncrement:true})};r.onsuccess=()=>{db=r.result;resolve(db)};r.onerror=()=>reject(r.error)})}
+function put(type,value){return new Promise((resolve,reject)=>{let tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).add({type,value,at:Date.now()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+function saveCandles(symbol,interval,bars){return new Promise((resolve,reject)=>{let tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({id:'candles:'+symbol+':'+interval,type:'candles',value:{symbol,interval,bars},at:Date.now()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+function getAll(type){return new Promise((resolve,reject)=>{let tx=db.transaction(STORE,'readonly'),r=tx.objectStore(STORE).getAll();r.onsuccess=()=>resolve(r.result.filter(x=>x.type===type).map(x=>x.value));r.onerror=()=>reject(r.error)})}
+function clearType(type){return new Promise(async(resolve,reject)=>{let tx=db.transaction(STORE,'readwrite'),s=tx.objectStore(STORE),r=s.openCursor();r.onsuccess=()=>{let c=r.result;if(c){if(c.value.type===type)c.delete();c.continue()}else resolve()};r.onerror=()=>reject(r.error)})}
+function makeMain(){if(!window.LightweightCharts){toast('Biblioteca de gráficos indisponível. Verifique a internet.');return}mainChart=LightweightCharts.createChart($('mainChart'),{width:$('mainChart').clientWidth,height:$('mainChart').clientHeight,layout:{background:{type:'solid',color:'#0a131e'},textColor:'#aab8c8'},grid:{vertLines:{color:'#172434'},horzLines:{color:'#172434'}},rightPriceScale:{borderColor:'#29394c'},timeScale:{borderColor:'#29394c',timeVisible:true},crosshair:{mode:0}});candleSeries=mainChart.addCandlestickSeries({upColor:'#19c58b',downColor:'#ff6678',borderUpColor:'#19c58b',borderDownColor:'#ff6678',wickUpColor:'#19c58b',wickDownColor:'#ff6678'});emaSeries=[mainChart.addLineSeries({color:'#70adff',lineWidth:1,priceLineVisible:false}),mainChart.addLineSeries({color:'#e0b65e',lineWidth:1,priceLineVisible:false}),mainChart.addLineSeries({color:'#b18cff',lineWidth:1,priceLineVisible:false})];new ResizeObserver(()=>mainChart.applyOptions({width:$('mainChart').clientWidth,height:$('mainChart').clientHeight})).observe($('mainChart'))}
+function makeMinis(){for(const s of SYMBOLS){let el=document.querySelector(`[data-mini="${s}"]`);let c=LightweightCharts.createChart(el,{width:el.clientWidth,height:54,layout:{background:{type:'solid',color:'#0a131e'},textColor:'#75869b'},grid:{vertLines:{visible:false},horzLines:{visible:false}},rightPriceScale:{visible:false},leftPriceScale:{visible:false},timeScale:{visible:false},crosshair:{vertLine:{visible:false},horzLine:{visible:false}}});let line=c.addLineSeries({color:'#70adff',lineWidth:2,priceLineVisible:false,lastValueVisible:false});miniCharts[s]={chart:c,line};new ResizeObserver(()=>c.applyOptions({width:el.clientWidth,height:54})).observe(el)}}
+function renderAssets(){ $('assets').innerHTML=SYMBOLS.map(s=>`<div class="asset ${s===selected?'selected':''}" data-asset="${s}"><div class="assethead"><span>${s}</span><span class="pill wait" id="pill-${s.replace('/','-')}">—</span></div><div class="assetprice" id="px-${s.replace('/','-')}">—</div><div class="assetmeta" id="meta-${s.replace('/','-')}">Sem dados</div><div class="spark" data-mini="${s}"></div></div>`).join('');document.querySelectorAll('.asset').forEach(el=>el.onclick=()=>selectAsset(el.dataset.asset));makeMinis()}
+function ema(vals,n){let k=2/(n+1),out=[],v=vals[0];vals.forEach((x,i)=>{v=i?x*k+v*(1-k):x;out.push(v)});return out}
+function rsi(vals,n=14){let o=Array(vals.length).fill(null);if(vals.length<=n)return o;let g=0,l=0;for(let i=1;i<=n;i++){let d=vals[i]-vals[i-1];g+=Math.max(0,d);l+=Math.max(0,-d)}let ag=g/n,al=l/n;o[n]=al===0?100:100-100/(1+ag/al);for(let i=n+1;i<vals.length;i++){let d=vals[i]-vals[i-1];ag=(ag*(n-1)+Math.max(0,d))/n;al=(al*(n-1)+Math.max(0,-d))/n;o[i]=al===0?100:100-100/(1+ag/al)}return o}
+function atr(b,n=14){let tr=b.map((x,i)=>i?Math.max(x.high-x.low,Math.abs(x.high-b[i-1].close),Math.abs(x.low-b[i-1].close)):x.high-x.low),o=Array(b.length).fill(null);if(b.length<=n)return o;let v=tr.slice(1,n+1).reduce((a,x)=>a+x,0)/n;o[n]=v;for(let i=n+1;i<b.length;i++){v=(v*(n-1)+tr[i])/n;o[i]=v}return o}
+function bands(v,n=20,m=2){let up=Array(v.length).fill(null),lo=[...up];for(let i=n-1;i<v.length;i++){let a=v.slice(i-n+1,i+1),mean=a.reduce((x,y)=>x+y,0)/n,sd=Math.sqrt(a.reduce((x,y)=>x+(y-mean)**2,0)/n);up[i]=mean+m*sd;lo[i]=mean-m*sd}return{up,lo}}
+function detectDivergence(b,i,lookback=24){
+ const c=b.slice(Math.max(0,i-lookback),i+1);if(c.length<12)return{bull:false,bear:false};
+ const r=rsi(b.map(x=>x.close));
+ const mid=Math.floor(c.length/2),left=c.slice(0,mid),right=c.slice(mid);
+ const lmin=left.reduce((a,x)=>x.low<a.low?x:a,left[0]),rmin=right.reduce((a,x)=>x.low<a.low?x:a,right[0]);
+ const lmax=left.reduce((a,x)=>x.high>a.high?x:a,left[0]),rmax=right.reduce((a,x)=>x.high>a.high?x:a,right[0]);
+ const li=b.indexOf(lmin),ri=b.indexOf(rmin),lhi=b.indexOf(lmax),rhi=b.indexOf(rmax);
+ return{bull:rmin.low<lmin.low&&r[ri]>r[li]+2,bear:rmax.high>lmax.high&&r[rhi]<r[lhi]-2};
+}
+function detectStructure(b,i){
+ const w=b.slice(Math.max(0,i-24),i),p=b[i];if(w.length<12)return{up:false,down:false,sweepUp:false,sweepDown:false};
+ const priorHigh=Math.max(...w.slice(0,-4).map(x=>x.high)),priorLow=Math.min(...w.slice(0,-4).map(x=>x.low));
+ const recentHigh=Math.max(...w.slice(-8).map(x=>x.high)),recentLow=Math.min(...w.slice(-8).map(x=>x.low));
+ const bosUp=p.close>priorHigh&&p.close>p.open,bosDown=p.close<priorLow&&p.close<p.open;
+ const chochUp=p.close>recentHigh&&recentLow>priorLow,chochDown=p.close<recentLow&&recentHigh<priorHigh;
+ const sweepDown=p.low<priorLow&&p.close>priorLow&&p.close>p.open;
+ const sweepUp=p.high>priorHigh&&p.close<priorHigh&&p.close<p.open;
+ return{up:bosUp||chochUp,down:bosDown||chochDown,sweepUp,sweepDown,priorHigh,priorLow};
+}
+function detectZones(b,i){
+ const p=b[i],prev=b[i-1],prev2=b[i-2];if(!prev2)return{bullFvg:false,bearFvg:false,bullOB:false,bearOB:false};
+ const bullFvg=p.low>prev2.high,bearFvg=p.high<prev2.low;
+ const near=(a,z)=>Math.abs(a-z)<=Math.max(p.close*.001, (p.high-p.low)*1.5);
+ const bullOB=prev.close<prev.open&&p.close>prev.high&&near(p.close,prev.open);
+ const bearOB=prev.close>prev.open&&p.close<prev.low&&near(p.close,prev.open);
+ return{bullFvg,bearFvg,bullOB,bearOB};
+}
+function volatilityProfile(b,atrValues,i){
+ const current=atrValues[i],price=b[i].close;
+ if(!Number.isFinite(current)||!price)return{atrPct:null,percentile:null,regime:'UNKNOWN',blocked:true,reason:'ATR indisponível'};
+ const atrPct=current/price*100,history=[];
+ for(let k=Math.max(20,i-100);k<i;k++)if(Number.isFinite(atrValues[k])&&b[k].close>0)history.push(atrValues[k]/b[k].close*100);
+ if(history.length<30)return{atrPct,percentile:null,regime:'UNKNOWN',blocked:true,reason:'Histórico insuficiente para calibrar volatilidade'};
+ const percentile=history.filter(x=>x<=atrPct).length/history.length*100;
+ const regime=percentile<20?'BAIXA':percentile>80?'ALTA':'NORMAL';
+ const blocked=percentile<5||percentile>95;
+ return{atrPct,percentile,regime,blocked,reason:blocked?(percentile>95?'Volatilidade extrema (percentil >95)':'Volatilidade anormalmente comprimida (percentil <5)'):'Volatilidade dentro da faixa histórica'};
+}
+function analyze(b){
+ if(!b||b.length<210)return null;
+ const c=b.map(x=>x.close),e9=ema(c,9),e21=ema(c,21),e200=ema(c,200),rr=rsi(c),aa=atr(b),bb=bands(c),i=c.length-2,p=b[i],prev=b[i-1],r=rr[i],vol=aa[i];
+ let up=0,dn=0,whyUp=[],whyDn=[],strUp=[],strDn=[];const volatility=volatilityProfile(b,aa,i);
+ const add=(dir,reason,strategy)=>{if(dir==='UP'){up++;whyUp.push(reason);strUp.push(strategy)}else if(dir==='DOWN'){dn++;whyDn.push(reason);strDn.push(strategy)}};
+ // 1. Trend: EMA alignment and price relative to long-term mean
+ if(e9[i]>e21[i]&&p.close>e200[i])add('UP','EMA 9 > 21 e preço > EMA 200','Tendência');
+ if(e9[i]<e21[i]&&p.close<e200[i])add('DOWN','EMA 9 < 21 e preço < EMA 200','Tendência');
+ // 2. Pullback: retest/reclaim of fast average in direction of trend
+ if(e9[i]>e21[i]&&prev.low<=e9[i-1]&&p.close>e9[i])add('UP','Reteste e retomada acima da EMA 9','Pullback');
+ if(e9[i]<e21[i]&&prev.high>=e9[i-1]&&p.close<e9[i])add('DOWN','Reteste e retomada abaixo da EMA 9','Pullback');
+ // 3. Momentum: RSI regime or regular divergence, counted once per direction
+ const div=detectDivergence(b,i);
+ if(e9[i]>e21[i]&&r>52&&r<72)add('UP','RSI confirma momentum comprador','Momentum');
+ else if(div.bull)add('UP','Divergência altista RSI/preço','Divergência RSI');
+ if(e9[i]<e21[i]&&r<48&&r>28)add('DOWN','RSI confirma momentum vendedor','Momentum');
+ else if(div.bear)add('DOWN','Divergência baixista RSI/preço','Divergência RSI');
+ // 4. Market structure: BOS/CHoCH or liquidity sweep, one point max
+ const st=detectStructure(b,i);
+ if(st.up)add('UP','BOS/CHoCH comprador confirmado no fechamento','Estrutura');
+ else if(st.sweepDown)add('UP','Sweep de mínima com rejeição e fechamento recuperado','Liquidity sweep');
+ if(st.down)add('DOWN','BOS/CHoCH vendedor confirmado no fechamento','Estrutura');
+ else if(st.sweepUp)add('DOWN','Sweep de máxima com rejeição e fechamento abaixo','Liquidity sweep');
+ // 5. Volatility: expansion in the direction of the close
+ const width=bb.up[i]-bb.lo[i],widthPrev=bb.up[i-1]-bb.lo[i-1];
+ if(width>widthPrev*1.08&&p.close>bb.up[i])add('UP','Expansão de volatilidade acima da banda','Bollinger expansion');
+ if(width>widthPrev*1.08&&p.close<bb.lo[i])add('DOWN','Expansão de volatilidade abaixo da banda','Bollinger expansion');
+ // 6. Location: FVG or order-block proximity/formation, heuristic
+ const zones=detectZones(b,i);
+ if(zones.bullFvg||zones.bullOB)add('UP',zones.bullFvg?'FVG altista recém-formado':'Possível Order Block comprador','FVG / Order Block');
+ if(zones.bearFvg||zones.bearOB)add('DOWN',zones.bearFvg?'FVG baixista recém-formado':'Possível Order Block vendedor','FVG / Order Block');
+ let dir='WAIT',score=Math.max(up,dn),reasons=up>dn?whyUp:dn>up?whyDn:[],strategies=up>dn?strUp:dn>up?strDn:[];
+ if(up>=3&&up>dn)dir='UP';if(dn>=3&&dn>up)dir='DOWN';
+ return{dir,score,scoreUp:up,scoreDn:dn,reasons,strategies,e9,e21,e200,r,atr:vol,price:p.close,closedTime:p.time,closedIndex:i,bb,div,structure:st,zones,volatility};
+}
+function m5Context(a5){
+ if(!a5)return{direction:'UNKNOWN',label:'DADOS PENDENTES',reason:'Aguardando histórico M5'};
+ let i=a5.closedIndex,up=a5.e9[i]>a5.e21[i]&&a5.price>a5.e200[i],down=a5.e9[i]<a5.e21[i]&&a5.price<a5.e200[i];
+ return up?{direction:'UP',label:'ALTA',reason:'EMA 9 acima da 21 e preço acima da EMA 200'}:
+ down?{direction:'DOWN',label:'BAIXA',reason:'EMA 9 abaixo da 21 e preço abaixo da EMA 200'}:
+ {direction:'NEUTRAL',label:'NEUTRO',reason:'Médias e preço sem alinhamento direcional'};
+}
+function newsRiskForSymbol(symbol,nowMs=Date.now()){
+ const map={'BTC/USD':['USD'],'EUR/USD':['USD','EUR'],'GBP/USD':['USD','GBP'],'USD/JPY':['USD','JPY'],'AUD/USD':['USD','AUD']};
+ const relevant=map[symbol]||[];
+ const active=economicEvents.filter(e=>{
+  const impact=String(e.impact||'').toLowerCase(),high=impact.includes('high')||impact==='3'||impact==='3.0';
+  const country=String(e.country||'').toUpperCase();
+  const currency=({US:'USD',USA:'USD',EU:'EUR',EMU:'EUR',GB:'GBP',UK:'GBP',JP:'JPY',AU:'AUD'})[country]||String(e.currency||'').toUpperCase();
+  const t=Date.parse(e.time||e.datetime||'');
+  return high&&relevant.includes(currency)&&Number.isFinite(t)&&Math.abs(t-nowMs)<=15*60*1000;
+ });
+ return active.length?{blocked:true,events:active,reason:'Evento econômico de alto impacto em janela de ±15 minutos'}:{blocked:false,events:[]};
+}
+function analyzeM5(bars){
+ const a=analyze(bars);
+ if(!a)return{state:'WAIT',dir:'WAIT',reason:['Histórico M5 insuficiente'],a:null};
+ const now=Math.floor(Date.now()/1000),age=now-(a.closedTime+300);
+ const fresh=age<=600&&age>=-60;
+ const bias=a.scoreUp>a.scoreDn?'UP':a.scoreDn>a.scoreUp?'DOWN':'NONE';
+ let state='WAIT',dir='WAIT',reason=[];
+ if(!fresh)reason.push('Último candle M5 fechado desatualizado');
+ else if(a.volatility?.blocked)reason.push('Bloqueio de volatilidade: '+a.volatility.reason);
+ 
+ else if(bias==='NONE'||a.score<3)reason.push('M5 abaixo do mínimo de formação (3/6)');
+ else if(a.dir===bias&&a.score>=5){state='SETUP';dir=bias;reason.push('Setup M5 elegível: '+a.score+'/6. Aguardar retração na mesma vela ou na próxima.');}
+ else reason.push('Pré-sinal M5 '+a.score+'/6; não elegível para entrada');
+ reason.push(...(a.reasons||[]));
+ return{state,dir,reason,a,fresh,age};
+}
+function drawMain(){
+ let b=cache[selected]?.['5min'];if(!b||!mainChart)return;
+ let a=analyze(b);if(!a){$('priceMeta').textContent='Histórico M5 insuficiente (mínimo 210 candles).';return}
+ candleSeries.setData(b);
+ const line=(v)=>v.map((x,i)=>({time:b[i].time,value:x})).filter(x=>Number.isFinite(x.value));
+ emaSeries[0].setData(line(a.e9));emaSeries[1].setData(line(a.e21));emaSeries[2].setData(line(a.e200));
+ mainChart.timeScale().fitContent();
+ $('price').textContent=a.price.toPrecision(9);
+ $('priceMeta').textContent='Último candle M5 fechado: '+new Date(a.closedTime*1000).toLocaleString('pt-BR');
+ $('selected').textContent=selected;$('tfLabel').textContent='M5';
+ $('rsi').textContent=a.r.toFixed(1);$('trend').textContent=a.e9[a.closedIndex]>a.e21[a.closedIndex]?'ALTA':'BAIXA';
+ $('trend').style.color=a.e9[a.closedIndex]>a.e21[a.closedIndex]?'var(--green)':'var(--red)';
+ $('atr').textContent=a.atr?.toPrecision(5)||'—';$('score').textContent=a.score+'/6';
+ const m=analyzeM5(b);renderMTF(m);renderSignal(selected,m);renderScanner();renderMovement();
+}
+function renderMTF(m){
+ const a=m?.a;
+ $('mtfContext').textContent=a?(m.dir==='UP'?'ALTA':m.dir==='DOWN'?'BAIXA':'NEUTRO'):'DADOS PENDENTES';
+ $('mtfContext').style.color=m?.dir==='UP'?'var(--green)':m?.dir==='DOWN'?'var(--red)':'var(--gold)';
+ $('mtfContextMeta').textContent=a?`EMA 9/21/200 • RSI ${a.r.toFixed(1)} • volatilidade ${a.volatility?.regime||'N/D'}`:'Aguardando histórico M5';
+ $('mtfTrigger').textContent=a?(m.dir==='WAIT'?'SEM DIREÇÃO':m.dir)+' • '+a.score+'/6':'Aguardando M5';
+ $('mtfTrigger').style.color=m?.dir==='UP'?'var(--green)':m?.dir==='DOWN'?'var(--red)':'var(--gold)';
+ $('mtfTriggerMeta').textContent=a?`Candle fechado ${new Date(a.closedTime*1000).toLocaleTimeString('pt-BR')} • ${a.strategies.join(', ')||'sem confluências'}`:'Necessário histórico M5';
+ $('mtfDecision').textContent=m?.state==='SETUP'?'SETUP M5 — AGUARDAR RETRAÇÃO':'AGUARDAR';
+ $('mtfDecision').style.color=m?.state==='SETUP'?'var(--green)':'var(--gold)';
+ $('mtfDecisionMeta').textContent=m?.reason?.slice(0,2).join(' • ')||'Somente M5';
+}
+function renderSignal(s,m){
+ $('sigAsset').textContent=s+' • M5';
+ const a=m?.a,score=a?a.score:0;
+ $('meter').style.width=Math.min(100,score/6*100)+'%';
+ $('sigFoot').textContent=a?`Confluência M5 ${score}/6 • mínimo 5/6 • aguardando retração na vela de ativação ou na vela M5 seguinte. Pontuação não é probabilidade estatística.`:'Aguardando candles M5 fechados.';
+ $('sigReason').textContent=m?.reason?.join(' • ')||'Aguardando análise M5.';
+ $('sigState').className='pill '+(m?.state==='SETUP'?'up':'wait');
+ $('sigState').textContent=m?.state==='SETUP'?'SETUP ELEGÍVEL':'AGUARDAR';
+ $('sigDirection').textContent=m?.state==='SETUP'?(m.dir==='UP'?'UP — AGUARDAR RETRAÇÃO M5':'DOWN — AGUARDAR RETRAÇÃO M5'):'Sem entrada confirmada';
+}
+function renderScanner(){
+ const rows=SYMBOLS.map(symbol=>({symbol,m:analyzeM5(cache[symbol]?.['5min']),news:newsRiskForSymbol(symbol)}))
+ .sort((a,b)=>(b.m.a?.score||0)-(a.m.a?.score||0));
+ const eligible=rows.filter(x=>x.m.state==='SETUP'&&x.m.a?.score>=5);
+ $('scannerCount').textContent=eligible.length+' setups';
+ $('scannerList').innerHTML=rows.map(x=>{const a=x.m.a,sc=a?.score||0,ok=x.m.state==='SETUP'&&sc>=5&&!x.news.blocked;
+ return `<div class="scanner-row"><b>${x.symbol}</b><span>${a?.volatility?.regime||'PENDENTE'}</span><span class="pill ${ok?(x.m.dir==='UP'?'up':'down'):'wait'}">${ok?'RETRAÇÃO '+x.m.dir:x.news.blocked?'NOTÍCIA HIGH':a?.volatility?.blocked?'VOL BLOQUEADA':sc>=3?'PRÉ-SINAL '+sc+'/6':sc+'/6'}</span></div>`}).join('');
+}
+function renderMini(s){
+ const bars=cache[s]?.['5min'];if(!bars)return;
+ const m=analyzeM5(bars),key=s.replace('/','-');
+ $('px-'+key).textContent=bars.at(-1).close.toPrecision(7);
+ $('meta-'+key).textContent='M5 • '+(m.a?.volatility?.regime||'—')+' • '+(m.a?.score??'—')+'/6';
+ let pill=$('pill-'+key);pill.className='pill '+(m.state==='SETUP'?(m.dir==='UP'?'up':'down'):'wait');
+ pill.textContent=m.state==='SETUP'?'SETUP '+m.dir:m.a?.volatility?.blocked?'VOL BLOQUEADA':(m.a?.score??'—')+'/6';
+ let vals=bars.slice(-60).map(x=>({time:x.time,value:x.close}));
+ miniCharts[s].line.setData(vals);miniCharts[s].line.applyOptions({color:m.state==='SETUP'?(m.dir==='UP'?'#19c58b':'#ff6678'):'#70adff'});
+}
+async function fetchM5Bars(symbol){
+ let u=new URL('https://api.twelvedata.com/time_series');
+ u.searchParams.set('symbol',symbol);u.searchParams.set('interval','5min');
+ u.searchParams.set('outputsize','300');u.searchParams.set('timezone','UTC');u.searchParams.set('apikey',apiKey);
+ let r=await fetch(u);let j=await r.json();
+ if(!r.ok||j.status==='error'||!j.values)throw Error(j.message||'Falha Twelve Data');
+ return j.values.slice().reverse().map(v=>({time:Math.floor(new Date(v.datetime.replace(' ','T')+'Z').getTime()/1000),open:+v.open,high:+v.high,low:+v.low,close:+v.close}))
+ .filter(x=>Number.isFinite(x.time)&&Number.isFinite(x.open)&&Number.isFinite(x.high)&&Number.isFinite(x.low)&&Number.isFinite(x.close));
+}
+async function pause(ms){return new Promise(r=>setTimeout(r,ms))}
+function connectPriceStream(){
+ if(ws||!apiKey)return;
+ try{
+  ws=new WebSocket('wss://ws.twelvedata.com/v1/quotes/price?apikey='+encodeURIComponent(apiKey));
+  ws.onopen=()=>{ws.send(JSON.stringify({action:'subscribe',params:{symbols:SYMBOLS.join(',')}}));status('WEBSOCKET M5 CONECTADO','ok');if(wsHeartbeat)clearInterval(wsHeartbeat);wsHeartbeat=setInterval(()=>{if(ws?.readyState===1)ws.send(JSON.stringify({action:'heartbeat'}))},10000)};
+  ws.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch{return}
+   if(d.event==='price'&&d.symbol&&Number.isFinite(Number(d.price))){processPriceTick(d.symbol,Number(d.price),Number(d.timestamp)||Math.floor(Date.now()/1000));renderMovement();$('tickState').textContent='Ticks ao vivo • '+d.symbol+' '+Number(d.price).toPrecision(8)}
+   if(d.event==='subscribe-status'&&d.status==='ok')$('tickState').textContent='Assinaturas confirmadas: '+(d.success||[]).length+'/5';
+   if(d.status==='error'||d.event==='error'){$('tickState').textContent='WebSocket: '+(d.message||'erro de conexão')}
+  };
+  ws.onerror=()=>{$('tickState').textContent='WebSocket indisponível — aguardando reconexão'};
+  ws.onclose=()=>{ws=null;if(wsHeartbeat)clearInterval(wsHeartbeat);$('tickState').textContent='WebSocket desconectado';if(running){if(reconnectTimer)clearTimeout(reconnectTimer);reconnectTimer=setTimeout(connectPriceStream,10000)}};
+ }catch(e){$('tickState').textContent='Falha WebSocket: '+e.message}
+}
+function disconnectPriceStream(){if(reconnectTimer)clearTimeout(reconnectTimer);if(wsHeartbeat)clearInterval(wsHeartbeat);if(ws){try{ws.send(JSON.stringify({action:'unsubscribe',params:{symbols:SYMBOLS.join(',')}}));ws.close()}catch{}ws=null}}
+async function scanCycle(){
+ if(busy||!apiKey)return;busy=true;let started=Date.now(),errors=[];
+ try{
+  status('ATUALIZANDO CINCO ATIVOS — M5');connectPriceStream();
+  for(const symbol of SYMBOLS){
+   try{const bars=await fetchM5Bars(symbol);if(bars.length<210)throw Error('Histórico M5 insuficiente');
+    cache[symbol]??={};cache[symbol]['5min']=bars;await saveCandles(symbol,'5min',bars);await pause(250);
+   }catch(e){errors.push(symbol+': '+e.message)}
+  }
+  for(const symbol of SYMBOLS){renderMini(symbol);refreshRetracementSetup(symbol);await evaluateNextCandleRetracement(symbol);}
+  if(cache[selected]?.['5min'])drawMain();
+  renderScanner();renderMovement();
+  $('updated').textContent=new Date().toLocaleTimeString('pt-BR');
+  $('cycle').textContent='Ciclo M5: '+Math.round((Date.now()-started)/1000)+'s • '+SYMBOLS.length+' ativos';
+  status(errors.length?'CICLO COM AVISOS':'MONITORAMENTO M5 ATIVO',errors.length?'err':'ok');
+  if(errors.length)toast(errors.join(' | ').slice(0,240));
+ }finally{busy=false}
+}
+async function recordM5Alert(symbol,setup,entryPrice,entryTime,mode){
+ const key=[symbol,'M5',setup.signalTime,setup.dir,mode].join('|');if(lastKeys.has(key))return;
+ lastKeys.add(key);
+ const day=new Date().toLocaleDateString('pt-BR'),count=latestSignals.filter(x=>x.day===day).length;
+ if(count>=Number($('maxAlerts').value||12))return;
+ const item={time:new Date().toLocaleTimeString('pt-BR'),day,symbol,tf:'M5',direction:setup.dir,score:setup.score,
+ strategies:setup.strategies.join(', '),reasons:setup.reasons,closedTime:setup.signalTime,context:'M5',entryPrice,entryTime,entryMode:mode};
+ latestSignals.unshift(item);latestSignals=latestSignals.slice(0,150);await put('signal',item);renderHistory();
+ $('count').textContent=latestSignals.length+' alertas';$('today').textContent=count+1;
+ toast('RETRAÇÃO M5 '+setup.dir+' • '+symbol+' • '+mode);if(soundOn)beep();
+ if('Notification'in window&&Notification.permission==='granted')new Notification('WOLF M5 • '+setup.dir+' '+symbol,{body:'Retração confirmada '+mode+' | '+setup.score+'/6 | preço '+entryPrice});
+}
+function refreshRetracementSetup(symbol){
+ const bars=cache[symbol]?.['5min'];if(!bars||bars.length<210)return;
+ const m=analyzeM5(bars),a=m.a;if(!a||m.state!=='SETUP')return;const newsRisk=newsRiskForSymbol(symbol);if(newsRisk.blocked){$('mtfDecision').textContent='BLOQUEADO POR NOTÍCIA';$('mtfDecisionMeta').textContent=newsRisk.reason;return;}
+ const signalBar=bars[a.closedIndex],signalTime=signalBar.time+300;
+ let setup=retracementSetups[symbol];
+ if(!setup||setup.signalTime!==signalTime||setup.dir!==m.dir){
+  setup={symbol,dir:m.dir,score:a.score,strategies:a.strategies,reasons:a.reasons,signalTime,
+   expiresAt:signalTime+600,signalClose:signalBar.close,ema9:a.e9[a.closedIndex],ema21:a.e21[a.closedIndex],
+   mid:(signalBar.open+signalBar.close)/2,zoneTouched:false,armedAt:null,alerted:false,barTime:null,
+   impulseHigh:signalBar.high,impulseLow:signalBar.low};
+  retracementSetups[symbol]=setup;
+ }
+}
+async function evaluateNextCandleRetracement(symbol){
+ const bars=cache[symbol]?.['5min'];if(!bars||bars.length<212||newsRiskForSymbol(symbol).blocked)return;
+ // bars[-1] is treated as the currently forming candle; bars[-2] is the completed retracement candle.
+ const hist=bars.slice(0,-1),a=analyze(hist);if(!a||a.score<5||a.volatility?.blocked)return;
+ const dir=a.scoreUp>a.scoreDn?'UP':a.scoreDn>a.scoreUp?'DOWN':'NONE';if(dir==='NONE'||a.dir!==dir)return;
+ const signalBar=hist[a.closedIndex],entryBar=bars[bars.length-2];
+ const signalTime=signalBar.time+300;
+ if(entryBar.time!==signalTime)return;
+ const ema9=a.e9[a.closedIndex],mid=(signalBar.open+signalBar.close)/2;
+ const zoneLow=Math.min(ema9,mid),zoneHigh=Math.max(ema9,mid);
+ const touched=entryBar.low<=zoneHigh&&entryBar.high>=zoneLow;
+ const recovered=dir==='UP'?entryBar.close>zoneHigh:entryBar.close<zoneLow;
+ if(!touched||!recovered)return;
+ const setup={signalTime,dir,score:a.score,strategies:a.strategies,reasons:a.reasons};
+ await recordM5Alert(symbol,setup,dir==='UP'?zoneHigh:zoneLow,entryBar.time+300,'RETRAÇÃO CONFIRMADA NA VELA M5 SEGUINTE (OHLC)');
+}
+function processPriceTick(symbol,price,ts){
+ if(!Number.isFinite(price)||!Number.isFinite(ts))return;
+ const bars=cache[symbol]?.['5min'];if(!bars)return;
+ const m5Open=Math.floor(ts/300)*300;
+ let live=liveCandles[symbol];
+ if(!live||live.time!==m5Open){
+  live={time:m5Open,open:price,high:price,low:price,close:price};liveCandles[symbol]=live;
+ }else{live.high=Math.max(live.high,price);live.low=Math.min(live.low,price);live.close=price}
+ const setup=retracementSetups[symbol];if(!setup||setup.alerted||newsRiskForSymbol(symbol).blocked)return;
+ if(ts<setup.signalTime||ts>=setup.expiresAt){if(ts>=setup.expiresAt)delete retracementSetups[symbol];return}
+ const atrVal=analyze(bars)?.atr||0,buffer=Math.max(atrVal*.04,Math.abs(price)*0.00002);
+ const z1=Math.min(setup.ema9,setup.mid),z2=Math.max(setup.ema9,setup.mid);
+ const inside=price>=z1-buffer&&price<=z2+buffer;
+ if(inside&&!setup.zoneTouched){setup.zoneTouched=true;setup.armedAt=m5Open;setup.touchPrice=price}
+ if(!setup.zoneTouched)return;
+ const sameBar=m5Open===setup.signalTime,nextBar=m5Open===setup.signalTime+300;
+ const recovered=setup.dir==='UP'?price>Math.max(setup.ema9,setup.mid)+buffer:price<Math.min(setup.ema9,setup.mid)-buffer;
+ if(recovered&&(sameBar||nextBar)){
+  setup.alerted=true;
+  recordM5Alert(symbol,setup,price,ts,sameBar?'RETRAÇÃO INTRABAR NA VELA M5 DE ATIVAÇÃO':'RETRAÇÃO INTRABAR NA VELA M5 SEGUINTE');
+ }
+}
+
+function safeDate(ts){return ts?new Date(ts*1000).toLocaleString('pt-BR'):'Horário indisponível'}
+function newsLink(url){try{const u=new URL(url);if(!['https:','http:'].includes(u.protocol))return '#';return u.href}catch{return '#'}}
+function renderNewsItems(items){
+ const feed=$('newsFeed');if(!items?.length){feed.innerHTML='<div class="muted">Nenhuma manchete retornada pela fonte.</div>';return}
+ feed.innerHTML=items.slice(0,18).map(n=>`<div class="scanner-row" style="grid-template-columns:1fr"><div><b>${String(n.headline||n.title||'Sem título').replace(/[<>]/g,'')}</b><div class="muted">${String(n.source||n.category||'Fonte não informada').replace(/[<>]/g,'')} • ${safeDate(n.datetime||n.time)}</div><a href="${newsLink(n.url)}" target="_blank" rel="noopener noreferrer">Abrir notícia ↗</a></div></div>`).join('');
+}
+async function loadNews(){
+ if(!newsKey){toast('Configure o token Finnhub para notícias.');return}
+ $('newsStatus').textContent='CARREGANDO';
+ try{
+  const cats=['forex','crypto','general'],all=[];
+  for(const category of cats){
+   const u=new URL('https://finnhub.io/api/v1/news');u.searchParams.set('category',category);u.searchParams.set('token',newsKey);
+   const r=await fetch(u);if(!r.ok)throw Error('Finnhub '+r.status+' em '+category);
+   const j=await r.json();if(Array.isArray(j))all.push(...j.map(x=>({...x,category})));
+  }
+  const unique=[...new Map(all.filter(x=>x.url&&x.headline).map(x=>[x.id||x.url,x])).values()].sort((a,b)=>(b.datetime||0)-(a.datetime||0));
+  renderNewsItems(unique);$('newsStatus').textContent=unique.length+' MANCHETES';
+  await put('news-cache',{items:unique.slice(0,100),savedAt:Date.now()});
+ }catch(e){$('newsStatus').textContent='ERRO';$('newsFeed').innerHTML='<div class="muted">Não foi possível carregar notícias: '+String(e.message).replace(/[<>]/g,'')+'. Verifique token, plano e acesso CORS.</div>'}
+}
+function renderEconomicEvents(events){
+ economicEvents=events||[];
+ $('economicFeed').innerHTML=economicEvents.length?economicEvents.slice().sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''))).slice(0,30).map(e=>`<div class="scanner-row" style="grid-template-columns:1fr auto"><div><b>${String(e.event||e.name||'Evento econômico').replace(/[<>]/g,'')}</b><div class="muted">${String(e.country||'País N/D')} • ${String(e.impact||'Impacto N/D')}</div></div><span>${String(e.time||'')}</span></div>`).join(''):'<div class="muted">Nenhum evento retornado.</div>';
+}
+async function loadEconomicCalendar(){
+ if(!newsKey){toast('Configure o token Finnhub para o calendário.');return}
+ $('newsStatus').textContent='CALENDÁRIO';
+ try{
+  const from=new Date(),to=new Date(Date.now()+7*86400000),fmt=d=>d.toISOString().slice(0,10);
+  const u=new URL('https://finnhub.io/api/v1/calendar/economic');u.searchParams.set('from',fmt(from));u.searchParams.set('to',fmt(to));u.searchParams.set('token',newsKey);
+  const r=await fetch(u);if(!r.ok)throw Error('Finnhub '+r.status+' — calendário pode exigir plano habilitado');
+  const j=await r.json(),events=j.economicCalendar||j.events||[];economicEvents=events;await put('economic-cache',{events,savedAt:Date.now()});renderEconomicEvents(events);
+  $('newsStatus').textContent=events.length+' EVENTOS';
+ }catch(e){$('economicFeed').innerHTML='<div class="muted">Calendário indisponível: '+String(e.message).replace(/[<>]/g,'')+'. A disponibilidade depende do plano e permissões Finnhub.</div>';$('newsStatus').textContent='CALENDÁRIO INDISPONÍVEL'}
+}
+function renderMovement(){
+ const rows=SYMBOLS.map(symbol=>{
+  const b=cache[symbol]?.['5min'];if(!b||b.length<25)return{symbol,ready:false};
+  const c=b.at(-2),p=b.at(-3),prev3=b.at(-5),a=analyze(b),live=liveCandles[symbol],livePrice=live?.close;
+  const chg=(c.close-p.close)/p.close*100,move3=(c.close-prev3.close)/prev3.close*100;
+  const liveChg=livePrice?((livePrice-live.open)/live.open*100):null;
+  const range=live?(live.high-live.low):(c.high-c.low),atrPct=a?.atr? a.atr/c.close*100:0;
+  const momentum=(liveChg??chg)>0?'ALTA':(liveChg??chg)<0?'BAIXA':'NEUTRO';
+  return{symbol,ready:true,chg,move3,liveChg,range,atrPct,momentum,regime:a?.volatility?.regime||'N/D',score:a?.score||0};
+ });
+ $('movementList').innerHTML=rows.map(x=>x.ready?`<div class="scanner-row"><b>${x.symbol}</b><span>${x.momentum} • candle ${x.liveChg==null?(x.chg>=0?'+':'')+x.chg.toFixed(3)+'%':(x.liveChg>=0?'+':'')+x.liveChg.toFixed(3)+'%'} • 3 candles ${(x.move3>=0?'+':'')+x.move3.toFixed(3)}%</span><span>${x.score}/6 • ${x.regime}</span></div>`:`<div class="scanner-row"><b>${x.symbol}</b><span>Sem histórico M5 suficiente</span></div>`).join('');
+}
+function sessionUTC(ts){
+ const h=new Date(ts*1000).getUTCHours();
+ return h<7?'Ásia (00-06 UTC)':h<13?'Londres (07-12 UTC)':h<21?'Nova York (13-20 UTC)':'Fim do dia (21-23 UTC)';
+}
+function metricSet(trades,payout){
+ const n=trades.length,w=trades.filter(t=>t.outcome==='WIN').length,l=trades.filter(t=>t.outcome==='LOSS').length,ties=n-w-l;
+ const grossWin=trades.reduce((a,t)=>a+Math.max(0,t.net),0),grossLoss=Math.abs(trades.reduce((a,t)=>a+Math.min(0,t.net),0));
+ let eq=0,peak=0,dd=0;for(const t of trades){eq+=t.net;peak=Math.max(peak,eq);dd=Math.max(dd,peak-eq)}
+ const net=trades.reduce((a,t)=>a+t.net,0);
+ return{n,w,l,ties,winRate:n?w/n:0,expectancy:n?net/n:0,net,pf:grossLoss?grossWin/grossLoss:(grossWin?Infinity:0),maxDD:dd,breakeven:1/(1+payout)};
+}
+function buildHistoricalTrades(symbol,bars,payout,expiry){
+ const out=[];if(!bars||bars.length<230)return out;let lastExit=-1;
+ for(let i=210;i<bars.length-expiry-1;i++){
+  const hist=bars.slice(0,i+2),a=analyze(hist);if(!a||a.score<5||a.volatility?.blocked)continue;
+  const dir=a.scoreUp>a.scoreDn?'UP':a.scoreDn>a.scoreUp?'DOWN':'NONE';if(dir==='NONE'||a.dir!==dir)continue;
+  const signalBar=bars[i],entryBar=bars[i+1],exitBar=bars[i+expiry];
+  if(i+1<=lastExit||!entryBar||!exitBar)continue;
+  const ema9=a.e9[a.closedIndex],mid=(signalBar.open+signalBar.close)/2;
+  const zoneLow=Math.min(ema9,mid),zoneHigh=Math.max(ema9,mid);
+  const nextBar=entryBar, touched=nextBar.low<=zoneHigh&&nextBar.high>=zoneLow;
+  if(!touched)continue;
+  const entry=dir==='UP'?zoneHigh:zoneLow;
+  const exit=exitBar.close;
+  const outcome=exit===entry?'TIE':((dir==='UP'&&exit>entry)||(dir==='DOWN'&&exit<entry))?'WIN':'LOSS';
+  out.push({symbol,dir,score:a.score,outcome,net:outcome==='WIN'?payout:outcome==='LOSS'?-1:0,
+   signalTime:signalBar.time+300,entryTime:entryBar.time,session:sessionUTC(signalBar.time),
+   volatility:a.volatility?.regime||'UNKNOWN',atrPercentile:a.volatility?.percentile,entryMode:'next-candle retracement'});
+  lastExit=i+expiry;
+ }
+ return out;
+}
+let lastBacktestReport=null;
+function runBacktest(){
+ const payout=Number($('btPayout').value)/100,expiry=Math.max(1,Math.min(5,Number($('btExpiry').value)||1));
+ if(!(payout>0&&payout<=1)){$('btNote').textContent='Informe payout entre 1% e 100%.';return}
+ let all=[],perAsset=[],allDev=0,allOos=0;
+ for(const symbol of SYMBOLS){
+  const bars=cache[symbol]?.['5min'],trades=buildHistoricalTrades(symbol,bars,payout,expiry);
+  const cut=Math.floor(trades.length*.7),dev=trades.slice(0,cut),oos=trades.slice(cut);
+  const dm=metricSet(dev,payout),om=metricSet(oos,payout);
+  perAsset.push({symbol,total:trades.length,dev:dm,oos:om});
+  all.push(...oos);allDev+=dev.length;allOos+=oos.length;
+ }
+ all.sort((a,b)=>a.entryTime-b.entryTime);
+ const m=metricSet(all,payout),totalTrades=perAsset.reduce((n,x)=>n+x.total,0);
+ $('btTrades').textContent=m.n;$('btWin').textContent=m.n?(m.winRate*100).toFixed(1)+'%':'—';
+ $('btExpect').textContent=m.n?m.expectancy.toFixed(3):'—';
+ $('btPF').textContent=m.n?(Number.isFinite(m.pf)?m.pf.toFixed(2):'∞'):'—';
+ $('btDD').textContent=m.n?m.maxDD.toFixed(2):'—';$('btNet').textContent=m.n?m.net.toFixed(2):'—';
+ $('btBE').textContent=(m.breakeven*100).toFixed(1)+'%';
+ $('btAssets').textContent=perAsset.filter(x=>x.total>0).length+'/5';
+ $('btByAsset').innerHTML=perAsset.map(x=>`<tr><td>${x.symbol}</td><td>${x.oos.n}</td><td>${x.oos.n?(x.oos.winRate*100).toFixed(1)+'%':'—'}</td><td>${x.oos.n?x.oos.expectancy.toFixed(3):'—'}</td><td>${x.oos.n?(Number.isFinite(x.oos.pf)?x.oos.pf.toFixed(2):'∞'):'—'}</td></tr>`).join('');
+ const sessions={};for(const t of all)(sessions[t.session]??=[]).push(t);
+ const regimes={};for(const t of all)(regimes[t.volatility]??=[]).push(t);
+ const groupMetrics=obj=>Object.fromEntries(Object.entries(obj).map(([k,v])=>[k,metricSet(v,payout)]));
+ lastBacktestReport={createdAt:new Date().toISOString(),payout,expiry,method:'Chronological 70/30 split; signal after closed candle; entry next candle open; expiry candle close; M5 no-lookahead alignment; non-overlapping trades; extreme ATR percentile blocked.',totalTrades,developmentTrades:allDev,outOfSampleTrades:allOos,oos:m,perAsset,sessions:groupMetrics(sessions),volatilityRegimes:groupMetrics(regimes),trades:all};
+ $('btNote').textContent=totalTrades?`Amostra total ${totalTrades} sinais elegíveis; desenvolvimento ${allDev}; fora da amostra ${allOos}. OOS agregado: ${m.w} vitórias, ${m.l} derrotas e ${m.ties} empates. UTC usado para sessões. Amostra pequena ou poucos trades por ativo não permitem conclusão confiável.`:'Nenhum trade passou por 5/6 + M5 alinhado + filtro de volatilidade. Verifique histórico disponível e sincronização temporal.';
+ $('btNote').textContent+=' A divisão 70/30 é por ordem cronológica dentro de cada ativo; não é walk-forward completo e não elimina viés de seleção.';
+}
+function exportBacktestCSV(){
+ if(!lastBacktestReport){$('btNote').textContent='Execute a validação antes de exportar.';return}
+ const r=lastBacktestReport,rows=[['WOLF Evidence Lab','V5'],['Gerado',r.createdAt],['Método',r.method],['Payout',r.payout],['Expiração candles M5',r.expiry],[],['Ativo','Trades OOS','Wins','Losses','Ties','Win rate','Expectativa','Profit Factor','Max Drawdown']];
+ for(const x of r.perAsset)rows.push([x.symbol,x.oos.n,x.oos.w,x.oos.l,x.oos.ties,x.oos.winRate,x.oos.expectancy,x.oos.pf,x.oos.maxDD]);
+ rows.push([],['Sessão UTC','Trades','Win rate','Expectativa','Profit Factor']);
+ for(const [k,v] of Object.entries(r.sessions))rows.push([k,v.n,v.winRate,v.expectancy,v.pf]);
+ rows.push([],['Regime volatilidade','Trades','Win rate','Expectativa','Profit Factor']);
+ for(const [k,v] of Object.entries(r.volatilityRegimes))rows.push([k,v.n,v.winRate,v.expectancy,v.pf]);
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\r\n');
+ const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='wolf_evidence_report_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
+}
+function weeklySummary(){
+ const now=Date.now(),week=latestSignals.filter(x=>now-new Date(x.closedTime*1000).getTime()<=7*86400000);
+ const lines=week.reduce((a,x)=>{const k=x.symbol;(a[k]??={n:0,up:0,down:0,score:0})[x.direction==='UP'?'up':'down']++;a[k].n++;a[k].score+=Number(x.score)||0;return a},{});
+ $('weeklyNote').textContent=week.length?`Últimos 7 dias: ${week.length} alertas qualificados. `+Object.entries(lines).map(([k,v])=>`${k}: ${v.n} sinais (${v.up} UP/${v.down} DOWN), média ${(v.score/v.n).toFixed(1)}/6`).join(' • '):'Nenhum alerta qualificado registrado nos últimos 7 dias.';
+}
+function compareBrokerQuote(){
+ const ext=Number($('brokerQuote').value),ref=cache[selected]?.['5min']?.at(-2)?.close;
+ if(!(ext>0)||!(ref>0)){$('quoteNote').textContent='Informe uma cotação válida e carregue candles do ativo selecionado.';return}
+ const delta=(ext-ref)/ref*100;
+ $('refQuote').textContent=ref.toPrecision(10);$('quoteDelta').textContent=(delta>=0?'+':'')+delta.toFixed(4)+'%';
+ $('quoteNote').textContent='Comparação pontual manual para '+selected+'. Diferença absoluta '+Math.abs(ext-ref).toPrecision(8)+'. Verifique se os símbolos, tipo de ativo (spot/OTC), horário e convenção de preço são equivalentes antes de interpretar a divergência.';
+}
+function beep(){try{let c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=760;g.gain.value=.035;o.start();o.stop(c.currentTime+.18)}catch(e){}}
+function renderHistory(){ $('history').innerHTML=latestSignals.slice(0,40).map(x=>`<tr><td>${x.time}</td><td>${x.symbol}</td><td>${x.tf}</td><td class="${x.direction==='UP'?'uptext':'downtext'}">${x.direction}</td><td>${x.strategies}</td><td>${x.score}/6</td></tr>`).join('')||'<tr><td colspan="6" class="muted">Nenhum alerta registrado.</td></tr>';$('count').textContent=latestSignals.length+' alertas';$('today').textContent=latestSignals.filter(x=>x.day===new Date().toLocaleDateString('pt-BR')).length}
+function selectAsset(s){selected=s;document.querySelectorAll('.asset').forEach(x=>x.classList.toggle('selected',x.dataset.asset===s));$('selected').textContent=s;drawMain();renderMovement()}
+async function start(){if(!apiKey){toast('Informe sua API Key Twelve Data.');return}if(running)return;running=true;$('scan').textContent='Pausar monitoramento';await scanCycle();timer=setInterval(scanCycle,60000)}function stop(){running=false;if(timer)clearInterval(timer);timer=null;disconnectPriceStream();$('scan').textContent='Iniciar monitoramento';status('MONITORAMENTO PAUSADO')}
+$('scan').onclick=()=>running?stop():start();$('runBacktest').onclick=runBacktest;$('exportReport').onclick=exportBacktestCSV;$('weeklyReport').onclick=weeklySummary;$('compareQuote').onclick=compareBrokerQuote;$('saveNewsKey').onclick=async()=>{let k=$('newsKey').value.trim();if(!k)return toast('Informe o token Finnhub.');newsKey=k;await put('news-setting',{token:k});$('newsKey').value='';$('newsKey').placeholder='Token salvo neste navegador';toast('Token de notícias salvo localmente.');loadNews()};$('refreshNews').onclick=loadNews;$('refreshCalendar').onclick=loadEconomicCalendar;$('save').onclick=async()=>{let k=$('key').value.trim();if(!k)return toast('Informe uma chave.');apiKey=k;await put('setting',{apiKey:k});toast('Chave salva no IndexedDB deste navegador.');status('CHAVE CONFIGURADA')};$('notify').onclick=async()=>{if(!('Notification'in window))return toast('Este navegador não oferece notificações.');let p=await Notification.requestPermission();toast('Permissão de notificações: '+p)};$('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent='Som: '+(soundOn?'ligado':'desligado');if(soundOn)beep()};$('clear').onclick=async()=>{if(confirm('Apagar o histórico de alertas local?')){await clearType('signal');latestSignals=[];lastKeys.clear();renderHistory()}};
+(async()=>{try{await openDB();let newsSettings=await getAll('news-setting');if(newsSettings.length)newsKey=newsSettings.at(-1).token;let savedNews=await getAll('news-cache');if(savedNews.length)renderNewsItems(savedNews.at(-1).items);let savedEconomic=await getAll('economic-cache');if(savedEconomic.length){economicEvents=savedEconomic.at(-1).events||[];renderEconomicEvents(economicEvents);}let settings=await getAll('setting');if(settings.length){apiKey=settings.at(-1).apiKey;$('key').value='';$('key').placeholder=apiKey?'Chave salva neste navegador — digite outra para substituir':'API Key'}latestSignals=await getAll('signal');latestSignals.sort((a,b)=>b.closedTime-a.closedTime);latestSignals=latestSignals.filter(x=>Number(x.score)>=5).slice(0,150);latestSignals.forEach(x=>lastKeys.add([x.symbol,'M5',x.closedTime,x.direction,x.entryMode||''].join('|')));let stored=await getAll('candles');stored.filter(x=>x.interval==='5min').forEach(x=>{cache[x.symbol]??={};cache[x.symbol]['5min']=x.bars});renderAssets();makeMain();renderHistory();for(const s of SYMBOLS)renderMini(s);if(cache[selected]?.['5min'])drawMain();renderScanner();renderMovement();renderScanner();status('BANCO LOCAL PRONTO','ok')}catch(e){toast('Falha ao iniciar IndexedDB: '+e.message)}})();
+})();
+</script></body></html>
