@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WOLF Trading Terminal V5 — Evidence Intelligence</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{--bg:#080d14;--panel:#101925;--panel2:#0b131e;--line:#243346;--txt:#e8eef7;--muted:#91a1b4;--green:#19c58b;--red:#ff6678;--gold:#e0b65e;--blue:#70adff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1a2c43,#080d14 55%);color:var(--txt);font:14px Inter,system-ui,Arial}.wrap{max-width:1600px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.brand{display:flex;gap:12px;align-items:center}.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(140deg,#f0c56b,#72501b);display:grid;place-items:center;color:#111;font-size:23px;font-weight:900}.brand h1{margin:0;font-size:19px;letter-spacing:2px}.brand small,.muted,.note{color:var(--muted)}.brand small{font-size:10px;letter-spacing:1.6px}.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}.dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}.dot.ok{background:var(--green)}.dot.err{background:var(--red)}.panel{background:linear-gradient(180deg,#111b29,#0e1621);border:1px solid var(--line);border-radius:13px;padding:13px;min-width:0}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.toolbar select,.toolbar input,.settings input,.risk input{background:#09121d;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px}button{background:#1a293b;border:1px solid var(--line);border-radius:8px;padding:9px 12px;color:var(--txt);cursor:pointer}button:hover{border-color:var(--blue)}button.active,button.primary{background:#174a3c;border-color:#247b62}.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.8fr);gap:13px}.stack{display:flex;flex-direction:column;gap:13px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 11px;font-size:12px;letter-spacing:1px;text-transform:uppercase}.assets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}.asset{background:#0a131e;border:1px solid var(--line);border-radius:10px;padding:9px;cursor:pointer;min-width:0}.asset.selected{border-color:var(--blue);box-shadow:0 0 0 1px #70adff33}.assethead{display:flex;justify-content:space-between;gap:4px;font-weight:700;font-size:12px}.assetprice{font-size:15px;font-weight:750;margin:7px 0 2px;overflow:hidden;text-overflow:ellipsis}.assetmeta{font-size:10px;color:var(--muted)}.spark{height:54px;margin-top:5px}.pill{font-size:9px;padding:4px 6px;border-radius:20px;background:#273446;color:#c5d2e0;white-space:nowrap}.pill.up{background:#123c32;color:#73e3b9}.pill.down{background:#451f29;color:#ff9ba8}.pill.wait{background:#40351f;color:#f0ce7c}.charthead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.bigprice{font-size:23px;font-weight:800}.chart{height:390px;width:100%;margin-top:8px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.kpi{background:#0a131e;border:1px solid var(--line);border-radius:9px;padding:9px}.kpi span{font-size:9px;color:var(--muted);text-transform:uppercase}.kpi strong{display:block;margin-top:5px;font-size:16px}.signal{background:#0a131e;border:1px solid var(--line);border-radius:10px;padding:12px}.signal h3{margin:9px 0 4px;font-size:17px}.signal p{font-size:12px;color:var(--muted);line-height:1.5;margin:5px 0}.meter{height:5px;background:#263548;border-radius:9px;overflow:hidden;margin:10px 0}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--green))}.settings{display:grid;grid-template-columns:1fr auto;gap:7px}.settings input{width:100%;min-width:0}.note{font-size:10px;line-height:1.5}.rows{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #1e2b3b;font-size:11px}.risk{display:grid;grid-template-columns:1fr 1fr;gap:8px}.risk label{font-size:10px;color:var(--muted)}.risk input{display:block;width:100%;margin-top:5px}.history{width:100%;border-collapse:collapse;font-size:10px}.history th,.history td{text-align:left;padding:8px 5px;border-bottom:1px solid #1d2a3a;white-space:nowrap}.history th{color:var(--muted);font-weight:500}.uptext{color:var(--green)}.downtext{color:var(--red)}.toast{position:fixed;bottom:16px;right:16px;max-width:340px;background:#1b2b3d;border:1px solid #3b5674;border-radius:10px;padding:12px;display:none;z-index:10}.toast.show{display:block}.footer{text-align:center;color:#718197;font-size:10px;padding:16px}.checks{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:var(--muted)}.mtfgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.lab-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.lab-controls label{font-size:11px;color:var(--muted)}.lab-controls input{width:100%;margin-top:5px}.lab-result{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}.lab-stat{background:#0a131e;border:1px solid var(--line);border-radius:8px;padding:9px}.lab-stat span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase}.lab-stat b{display:block;margin-top:5px;font-size:15px}.scanner-list{display:grid;gap:7px}.evidence-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}.evidence-stat{background:#0a131e;border:1px solid var(--line);border-radius:8px;padding:9px}.evidence-stat span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase}.evidence-stat b{display:block;margin-top:5px;font-size:14px}.report-table{width:100%;border-collapse:collapse;font-size:11px}.report-table th,.report-table td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.quote-grid{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.quote-grid label{font-size:11px;color:var(--muted)}.quote-grid input{width:100%;margin-top:5px}@media(max-width:650px){.evidence-grid{grid-template-columns:1fr 1fr}}.scanner-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px;border-bottom:1px solid var(--line);font-size:11px}.scanner-row:last-child{border-bottom:0}@media(max-width:650px){.lab-controls{grid-template-columns:1fr 1fr}.lab-controls button{grid-column:1/-1}.lab-result{grid-template-columns:1fr 1fr}}.mtfbox{background:#0a131e;border:1px solid var(--line);border-radius:9px;padding:10px;min-width:0}.mtfbox span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}.mtfbox strong{display:block;margin-top:6px;font-size:13px}.mtfbox small{display:block;margin-top:5px;font-size:10px;color:var(--muted);line-height:1.4}@media(max-width:650px){.mtfgrid{grid-template-columns:1fr}}@media(max-width:1050px){.layout{grid-template-columns:1fr}.assets{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.wrap{padding:9px}.assets{grid-template-columns:repeat(2,1fr)}.chart{height:310px}.kpis{grid-template-columns:repeat(2,1fr)}}
+</style></head><body><div class="wrap">
+<header class="top"><div class="brand"><div class="logo">W</div><div><h1>WOLF TRADING TERMINAL</h1><small>MARKET INTELLIGENCE • PRICE ACTION • RISK CONTROL</small></div></div><div class="status"><i class="dot" id="dot"></i><span id="status">AGUARDANDO CONEXÃO</span><span>•</span><span>V5.0 EVIDENCE LOCAL</span></div></header>
+<div class="toolbar"><select id="tf"><option value="1min">M1 — entrada</option><option value="5min">M5 — contexto</option></select><button id="scan" class="primary">Iniciar monitoramento</button><button id="notify">Ativar notificações</button><button id="sound">Som: desligado</button><span class="muted" id="cycle">Scanner parado</span></div>
+<div class="panel" style="margin-bottom:13px"><h2 class="section-title">Radar de ativos <span class="pill" id="radarState">5 ATIVOS</span></h2><div class="assets" id="assets"></div><p class="note">Selecione um ativo para ampliar o gráfico. O motor consulta M1 para os cinco ativos e distribui as atualizações M5 entre os ativos. A frequência efetiva depende da cota e dos limites da Twelve Data.</p></div>
+<div class="layout"><main class="stack"><section class="panel"><div class="charthead"><div><div class="bigprice" id="price">—</div><div class="muted" id="priceMeta">Selecione conexão e inicie o monitoramento</div></div><div><b id="selected">BTC/USD</b> <span class="pill" id="tfLabel">M1</span></div></div><div id="mainChart" class="chart"></div><div class="kpis"><div class="kpi"><span>RSI 14 (gráfico)</span><strong id="rsi">—</strong></div><div class="kpi"><span>Tendência do gráfico</span><strong id="trend">—</strong></div><div class="kpi"><span>ATR 14</span><strong id="atr">—</strong></div><div class="kpi"><span>Confluência M1</span><strong id="score">—</strong></div></div><div class="mtfgrid"><div class="mtfbox"><span>Contexto M5</span><strong id="mtfContext">Aguardando dados</strong><small id="mtfContextMeta">Tendência estrutural</small></div><div class="mtfbox"><span>Gatilho M1</span><strong id="mtfTrigger">Aguardando dados</strong><small id="mtfTriggerMeta">Confluências de entrada</small></div><div class="mtfbox"><span>Decisão MTF</span><strong id="mtfDecision">AGUARDAR</strong><small id="mtfDecisionMeta">M5 filtra; M1 confirma</small></div></div><p class="note">M5 define o contexto direcional; M1 procura o gatilho. Somente 5/6 ou 6/6 geram entrada; volatilidade extrema ou comprimida bloqueia alertas. Pontuação não é probabilidade de vitória. Sinais são avaliados com candles fechados.</p></section>
+<section class="panel"><h2 class="section-title">Diário de alertas <button id="clear">Limpar histórico</button></h2><div style="overflow:auto"><table class="history"><thead><tr><th>Horário</th><th>Ativo</th><th>TF</th><th>Direção</th><th>Estratégias</th><th>Pontos</th></tr></thead><tbody id="history"><tr><td colspan="6" class="muted">Nenhum alerta registrado.</td></tr></tbody></table></div></section></main>
+<aside class="stack"><section class="panel"><h2 class="section-title">Central de sinais <span class="pill" id="count">0 alertas</span></h2><div class="signal"><div class="charthead"><b id="sigAsset">BTC/USD</b><span class="pill wait" id="sigState">AGUARDANDO</span></div><h3 id="sigDirection">Sem sinal confirmado</h3><p id="sigReason">Conecte a fonte de dados para iniciar a leitura dos ativos.</p><div class="meter"><i id="meter" style="width:0%"></i></div><p id="sigFoot">Nenhuma taxa de acerto é presumida.</p></div><p class="note">Alertas informativos. O filtro de volatilidade bloqueia extremos estatísticos. Compare manualmente a cotação, payout e regras da Olymptrade antes de qualquer operação. Não há execução automática.</p></section>
+<section class="panel"><h2 class="section-title">Scanner de oportunidades <span class="pill" id="scannerCount">0 elegíveis</span></h2><div class="scanner-list" id="scannerList"><div class="muted">Aguardando dados M1 e M5 dos ativos.</div></div><p class="note">O radar ordena configurações por confluência. Somente 5/6 ou 6/6 alinhados ao contexto M5 podem gerar alerta.</p></section>
+<section class="panel"><h2 class="section-title">WOLF Evidence Lab <span class="pill">V5</span></h2><div class="lab-controls"><label>Payout (%)<input id="btPayout" type="number" min="1" max="100" value="80"></label><label>Expiração (min)<input id="btExpiry" type="number" min="1" max="5" value="1"></label><button class="primary" id="runBacktest">Executar validação</button></div><div class="evidence-grid"><div class="evidence-stat"><span>Trades OOS</span><b id="btTrades">—</b></div><div class="evidence-stat"><span>Acerto OOS</span><b id="btWin">—</b></div><div class="evidence-stat"><span>Expectativa</span><b id="btExpect">—</b></div><div class="evidence-stat"><span>Profit Factor</span><b id="btPF">—</b></div><div class="evidence-stat"><span>Drawdown máx.</span><b id="btDD">—</b></div><div class="evidence-stat"><span>Resultado OOS</span><b id="btNet">—</b></div><div class="evidence-stat"><span>Taxa equilíbrio</span><b id="btBE">—</b></div><div class="evidence-stat"><span>Ativos testados</span><b id="btAssets">—</b></div></div><p class="note" id="btNote">Validação cronológica: 70% desenvolvimento e 30% fora da amostra. Entrada simulada na abertura do candle seguinte ao sinal; resultado no fechamento da expiração.</p><div style="overflow:auto;margin-top:10px"><table class="report-table"><thead><tr><th>Ativo</th><th>Trades OOS</th><th>Win rate</th><th>Expectativa</th><th>PF</th></tr></thead><tbody id="btByAsset"><tr><td colspan="5" class="muted">Execute a validação para gerar o relatório.</td></tr></tbody></table></div><div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button id="exportReport">Exportar relatório CSV</button><button id="weeklyReport">Resumo semanal</button></div><p class="note" id="weeklyNote">Relatório semanal baseado nos alertas registrados localmente.</p></section>
+<section class="panel"><h2 class="section-title">Verificação de cotação Olymptrade</h2><div class="quote-grid"><label>Cotação exibida na Olymptrade<input id="brokerQuote" type="number" step="any" placeholder="Digite a cotação atual"></label><button id="compareQuote">Comparar</button></div><div class="rows"><span>Referência Twelve Data</span><b id="refQuote">—</b></div><div class="rows"><span>Diferença percentual</span><b id="quoteDelta">—</b></div><p class="note" id="quoteNote">Comparação manual: informe a cotação vista na Olymptrade para o ativo selecionado. Não há conexão direta com o feed da corretora. Diferenças de fonte, OTC, spread e horário podem tornar ativos não equivalentes.</p></section>
+<section class="panel"><h2 class="section-title">Conexão Twelve Data</h2><div class="settings"><input id="key" type="password" placeholder="API Key" autocomplete="off"><button class="primary" id="save">Salvar chave</button></div><div class="rows"><span>Fonte</span><b>REST time_series</b></div><div class="rows"><span>Ativos</span><b>5 monitorados</b></div><div class="rows"><span>Última atualização</span><b id="updated">—</b></div><div class="rows"><span>Estado dos dados</span><b id="dataState">Não conectado</b></div><p class="note">A chave é guardada no IndexedDB deste navegador. Em uma aplicação puramente local, ela pode ser vista por quem tiver acesso ao navegador ou ao código executado. Não publique o arquivo com a chave preenchida.</p></section>
+<section class="panel"><h2 class="section-title">Gestão de risco</h2><div class="risk"><label>Limite diário de alertas<input id="maxAlerts" type="number" min="1" max="100" value="12"></label><label>Pausa após perdas (manual)<input id="lossStop" type="number" min="1" max="10" value="3"></label></div><div class="rows"><span>Alertas hoje</span><b id="today">0</b></div><div class="rows"><span>Modo</span><b>Somente análise</b></div><p class="note">O sistema não conhece o saldo nem o resultado financeiro da corretora. O limite é operacional e não bloqueia ordens externas.</p></section>
+<section class="panel"><h2 class="section-title">Motores ativos</h2><div class="checks"><span>✓ EMA 9/21/200</span><span>✓ RSI 14</span><span>✓ Bollinger 20/2</span><span>✓ ATR 14</span><span>✓ BOS / CHoCH</span><span>✓ Divergência RSI</span><span>✓ FVG / Order Block</span><span>✓ Motor MTF com filtro 5/6</span></div><p class="note">Confluências organizadas em seis pilares independentes. O backtest usa somente histórico carregado e parâmetros explícitos; valide os dados e a execução na corretora antes de qualquer uso real.</p></section></aside></div><div class="footer">WOLF V5 • Ferramenta de análise e estudo. Alertas exigem 5/6 ou 6/6; backtests são históricos e não garantem resultados futuros.</div></div><div class="toast" id="toast"></div>
+<script>
+(()=>{'use strict';const $=id=>document.getElementById(id),SYMBOLS=['BTC/USD','EUR/USD','GBP/USD','USD/JPY','AUD/USD'];let db,apiKey='',selected='BTC/USD',tf='1min',soundOn=false,running=false,timer=null,busy=false,mainChart=null,candleSeries=null,emaSeries=[],miniCharts={},cache={},latestSignals=[],lastKeys=new Set(),lastCycle=0,mtfCursor=0;const DB='wolf_terminal_db',STORE='records';
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3600)}function status(s,type=''){ $('status').textContent=s;$('dot').className='dot '+type;$('dataState').textContent=s }
+function openDB(){return new Promise((resolve,reject)=>{let r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{let d=r.result;if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id',autoIncrement:true})};r.onsuccess=()=>{db=r.result;resolve(db)};r.onerror=()=>reject(r.error)})}
+function put(type,value){return new Promise((resolve,reject)=>{let tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).add({type,value,at:Date.now()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+function saveCandles(symbol,interval,bars){return new Promise((resolve,reject)=>{let tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({id:'candles:'+symbol+':'+interval,type:'candles',value:{symbol,interval,bars},at:Date.now()});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+function getAll(type){return new Promise((resolve,reject)=>{let tx=db.transaction(STORE,'readonly'),r=tx.objectStore(STORE).getAll();r.onsuccess=()=>resolve(r.result.filter(x=>x.type===type).map(x=>x.value));r.onerror=()=>reject(r.error)})}
+function clearType(type){return new Promise(async(resolve,reject)=>{let tx=db.transaction(STORE,'readwrite'),s=tx.objectStore(STORE),r=s.openCursor();r.onsuccess=()=>{let c=r.result;if(c){if(c.value.type===type)c.delete();c.continue()}else resolve()};r.onerror=()=>reject(r.error)})}
+function makeMain(){if(!window.LightweightCharts){toast('Biblioteca de gráficos indisponível. Verifique a internet.');return}mainChart=LightweightCharts.createChart($('mainChart'),{width:$('mainChart').clientWidth,height:$('mainChart').clientHeight,layout:{background:{type:'solid',color:'#0a131e'},textColor:'#aab8c8'},grid:{vertLines:{color:'#172434'},horzLines:{color:'#172434'}},rightPriceScale:{borderColor:'#29394c'},timeScale:{borderColor:'#29394c',timeVisible:true},crosshair:{mode:0}});candleSeries=mainChart.addCandlestickSeries({upColor:'#19c58b',downColor:'#ff6678',borderUpColor:'#19c58b',borderDownColor:'#ff6678',wickUpColor:'#19c58b',wickDownColor:'#ff6678'});emaSeries=[mainChart.addLineSeries({color:'#70adff',lineWidth:1,priceLineVisible:false}),mainChart.addLineSeries({color:'#e0b65e',lineWidth:1,priceLineVisible:false}),mainChart.addLineSeries({color:'#b18cff',lineWidth:1,priceLineVisible:false})];new ResizeObserver(()=>mainChart.applyOptions({width:$('mainChart').clientWidth,height:$('mainChart').clientHeight})).observe($('mainChart'))}
+function makeMinis(){for(const s of SYMBOLS){let el=document.querySelector(`[data-mini="${s}"]`);let c=LightweightCharts.createChart(el,{width:el.clientWidth,height:54,layout:{background:{type:'solid',color:'#0a131e'},textColor:'#75869b'},grid:{vertLines:{visible:false},horzLines:{visible:false}},rightPriceScale:{visible:false},leftPriceScale:{visible:false},timeScale:{visible:false},crosshair:{vertLine:{visible:false},horzLine:{visible:false}}});let line=c.addLineSeries({color:'#70adff',lineWidth:2,priceLineVisible:false,lastValueVisible:false});miniCharts[s]={chart:c,line};new ResizeObserver(()=>c.applyOptions({width:el.clientWidth,height:54})).observe(el)}}
+function renderAssets(){ $('assets').innerHTML=SYMBOLS.map(s=>`<div class="asset ${s===selected?'selected':''}" data-asset="${s}"><div class="assethead"><span>${s}</span><span class="pill wait" id="pill-${s.replace('/','-')}">—</span></div><div class="assetprice" id="px-${s.replace('/','-')}">—</div><div class="assetmeta" id="meta-${s.replace('/','-')}">Sem dados</div><div class="spark" data-mini="${s}"></div></div>`).join('');document.querySelectorAll('.asset').forEach(el=>el.onclick=()=>selectAsset(el.dataset.asset));makeMinis()}
+function ema(vals,n){let k=2/(n+1),out=[],v=vals[0];vals.forEach((x,i)=>{v=i?x*k+v*(1-k):x;out.push(v)});return out}
+function rsi(vals,n=14){let o=Array(vals.length).fill(null);if(vals.length<=n)return o;let g=0,l=0;for(let i=1;i<=n;i++){let d=vals[i]-vals[i-1];g+=Math.max(0,d);l+=Math.max(0,-d)}let ag=g/n,al=l/n;o[n]=al===0?100:100-100/(1+ag/al);for(let i=n+1;i<vals.length;i++){let d=vals[i]-vals[i-1];ag=(ag*(n-1)+Math.max(0,d))/n;al=(al*(n-1)+Math.max(0,-d))/n;o[i]=al===0?100:100-100/(1+ag/al)}return o}
+function atr(b,n=14){let tr=b.map((x,i)=>i?Math.max(x.high-x.low,Math.abs(x.high-b[i-1].close),Math.abs(x.low-b[i-1].close)):x.high-x.low),o=Array(b.length).fill(null);if(b.length<=n)return o;let v=tr.slice(1,n+1).reduce((a,x)=>a+x,0)/n;o[n]=v;for(let i=n+1;i<b.length;i++){v=(v*(n-1)+tr[i])/n;o[i]=v}return o}
+function bands(v,n=20,m=2){let up=Array(v.length).fill(null),lo=[...up];for(let i=n-1;i<v.length;i++){let a=v.slice(i-n+1,i+1),mean=a.reduce((x,y)=>x+y,0)/n,sd=Math.sqrt(a.reduce((x,y)=>x+(y-mean)**2,0)/n);up[i]=mean+m*sd;lo[i]=mean-m*sd}return{up,lo}}
+function detectDivergence(b,i,lookback=24){
+ const c=b.slice(Math.max(0,i-lookback),i+1);if(c.length<12)return{bull:false,bear:false};
+ const r=rsi(b.map(x=>x.close));
+ const mid=Math.floor(c.length/2),left=c.slice(0,mid),right=c.slice(mid);
+ const lmin=left.reduce((a,x)=>x.low<a.low?x:a,left[0]),rmin=right.reduce((a,x)=>x.low<a.low?x:a,right[0]);
+ const lmax=left.reduce((a,x)=>x.high>a.high?x:a,left[0]),rmax=right.reduce((a,x)=>x.high>a.high?x:a,right[0]);
+ const li=b.indexOf(lmin),ri=b.indexOf(rmin),lhi=b.indexOf(lmax),rhi=b.indexOf(rmax);
+ return{bull:rmin.low<lmin.low&&r[ri]>r[li]+2,bear:rmax.high>lmax.high&&r[rhi]<r[lhi]-2};
+}
+function detectStructure(b,i){
+ const w=b.slice(Math.max(0,i-24),i),p=b[i];if(w.length<12)return{up:false,down:false,sweepUp:false,sweepDown:false};
+ const priorHigh=Math.max(...w.slice(0,-4).map(x=>x.high)),priorLow=Math.min(...w.slice(0,-4).map(x=>x.low));
+ const recentHigh=Math.max(...w.slice(-8).map(x=>x.high)),recentLow=Math.min(...w.slice(-8).map(x=>x.low));
+ const bosUp=p.close>priorHigh&&p.close>p.open,bosDown=p.close<priorLow&&p.close<p.open;
+ const chochUp=p.close>recentHigh&&recentLow>priorLow,chochDown=p.close<recentLow&&recentHigh<priorHigh;
+ const sweepDown=p.low<priorLow&&p.close>priorLow&&p.close>p.open;
+ const sweepUp=p.high>priorHigh&&p.close<priorHigh&&p.close<p.open;
+ return{up:bosUp||chochUp,down:bosDown||chochDown,sweepUp,sweepDown,priorHigh,priorLow};
+}
+function detectZones(b,i){
+ const p=b[i],prev=b[i-1],prev2=b[i-2];if(!prev2)return{bullFvg:false,bearFvg:false,bullOB:false,bearOB:false};
+ const bullFvg=p.low>prev2.high,bearFvg=p.high<prev2.low;
+ const near=(a,z)=>Math.abs(a-z)<=Math.max(p.close*.001, (p.high-p.low)*1.5);
+ const bullOB=prev.close<prev.open&&p.close>prev.high&&near(p.close,prev.open);
+ const bearOB=prev.close>prev.open&&p.close<prev.low&&near(p.close,prev.open);
+ return{bullFvg,bearFvg,bullOB,bearOB};
+}
+function volatilityProfile(b,atrValues,i){
+ const current=atrValues[i],price=b[i].close;
+ if(!Number.isFinite(current)||!price)return{atrPct:null,percentile:null,regime:'UNKNOWN',blocked:true,reason:'ATR indisponível'};
+ const atrPct=current/price*100,history=[];
+ for(let k=Math.max(20,i-100);k<i;k++)if(Number.isFinite(atrValues[k])&&b[k].close>0)history.push(atrValues[k]/b[k].close*100);
+ if(history.length<30)return{atrPct,percentile:null,regime:'UNKNOWN',blocked:true,reason:'Histórico insuficiente para calibrar volatilidade'};
+ const percentile=history.filter(x=>x<=atrPct).length/history.length*100;
+ const regime=percentile<20?'BAIXA':percentile>80?'ALTA':'NORMAL';
+ const blocked=percentile<5||percentile>95;
+ return{atrPct,percentile,regime,blocked,reason:blocked?(percentile>95?'Volatilidade extrema (percentil >95)':'Volatilidade anormalmente comprimida (percentil <5)'):'Volatilidade dentro da faixa histórica'};
+}
+function analyze(b){
+ if(!b||b.length<210)return null;
+ const c=b.map(x=>x.close),e9=ema(c,9),e21=ema(c,21),e200=ema(c,200),rr=rsi(c),aa=atr(b),bb=bands(c),i=c.length-2,p=b[i],prev=b[i-1],r=rr[i],vol=aa[i];
+ let up=0,dn=0,whyUp=[],whyDn=[],strUp=[],strDn=[];const volatility=volatilityProfile(b,aa,i);
+ const add=(dir,reason,strategy)=>{if(dir==='UP'){up++;whyUp.push(reason);strUp.push(strategy)}else if(dir==='DOWN'){dn++;whyDn.push(reason);strDn.push(strategy)}};
+ // 1. Trend: EMA alignment and price relative to long-term mean
+ if(e9[i]>e21[i]&&p.close>e200[i])add('UP','EMA 9 > 21 e preço > EMA 200','Tendência');
+ if(e9[i]<e21[i]&&p.close<e200[i])add('DOWN','EMA 9 < 21 e preço < EMA 200','Tendência');
+ // 2. Pullback: retest/reclaim of fast average in direction of trend
+ if(e9[i]>e21[i]&&prev.low<=e9[i-1]&&p.close>e9[i])add('UP','Reteste e retomada acima da EMA 9','Pullback');
+ if(e9[i]<e21[i]&&prev.high>=e9[i-1]&&p.close<e9[i])add('DOWN','Reteste e retomada abaixo da EMA 9','Pullback');
+ // 3. Momentum: RSI regime or regular divergence, counted once per direction
+ const div=detectDivergence(b,i);
+ if(e9[i]>e21[i]&&r>52&&r<72)add('UP','RSI confirma momentum comprador','Momentum');
+ else if(div.bull)add('UP','Divergência altista RSI/preço','Divergência RSI');
+ if(e9[i]<e21[i]&&r<48&&r>28)add('DOWN','RSI confirma momentum vendedor','Momentum');
+ else if(div.bear)add('DOWN','Divergência baixista RSI/preço','Divergência RSI');
+ // 4. Market structure: BOS/CHoCH or liquidity sweep, one point max
+ const st=detectStructure(b,i);
+ if(st.up)add('UP','BOS/CHoCH comprador confirmado no fechamento','Estrutura');
+ else if(st.sweepDown)add('UP','Sweep de mínima com rejeição e fechamento recuperado','Liquidity sweep');
+ if(st.down)add('DOWN','BOS/CHoCH vendedor confirmado no fechamento','Estrutura');
+ else if(st.sweepUp)add('DOWN','Sweep de máxima com rejeição e fechamento abaixo','Liquidity sweep');
+ // 5. Volatility: expansion in the direction of the close
+ const width=bb.up[i]-bb.lo[i],widthPrev=bb.up[i-1]-bb.lo[i-1];
+ if(width>widthPrev*1.08&&p.close>bb.up[i])add('UP','Expansão de volatilidade acima da banda','Bollinger expansion');
+ if(width>widthPrev*1.08&&p.close<bb.lo[i])add('DOWN','Expansão de volatilidade abaixo da banda','Bollinger expansion');
+ // 6. Location: FVG or order-block proximity/formation, heuristic
+ const zones=detectZones(b,i);
+ if(zones.bullFvg||zones.bullOB)add('UP',zones.bullFvg?'FVG altista recém-formado':'Possível Order Block comprador','FVG / Order Block');
+ if(zones.bearFvg||zones.bearOB)add('DOWN',zones.bearFvg?'FVG baixista recém-formado':'Possível Order Block vendedor','FVG / Order Block');
+ let dir='WAIT',score=Math.max(up,dn),reasons=up>dn?whyUp:dn>up?whyDn:[],strategies=up>dn?strUp:dn>up?strDn:[];
+ if(up>=3&&up>dn)dir='UP';if(dn>=3&&dn>up)dir='DOWN';
+ return{dir,score,scoreUp:up,scoreDn:dn,reasons,strategies,e9,e21,e200,r,atr:vol,price:p.close,closedTime:p.time,closedIndex:i,bb,div,structure:st,zones,volatility};
+}
+function m5Context(a5){
+ if(!a5)return{direction:'UNKNOWN',label:'DADOS PENDENTES',reason:'Aguardando histórico M5'};
+ let i=a5.closedIndex,up=a5.e9[i]>a5.e21[i]&&a5.price>a5.e200[i],down=a5.e9[i]<a5.e21[i]&&a5.price<a5.e200[i];
+ return up?{direction:'UP',label:'ALTA',reason:'EMA 9 acima da 21 e preço acima da EMA 200'}:
+ down?{direction:'DOWN',label:'BAIXA',reason:'EMA 9 abaixo da 21 e preço abaixo da EMA 200'}:
+ {direction:'NEUTRAL',label:'NEUTRO',reason:'Médias e preço sem alinhamento direcional'};
+}
+function analyzeMTF(m1Bars,m5Bars){
+ const a1=analyze(m1Bars),a5=analyze(m5Bars),ctx=m5Context(a5);
+ if(!a1)return{state:'WAIT',dir:'WAIT',reason:'Histórico M1 insuficiente',a1:null,a5,ctx};
+ const now=Math.floor(Date.now()/1000),m1Age=now-(a1.closedTime+60),m5Age=a5?now-(a5.closedTime+300):Infinity;
+ const m1Fresh=m1Age<=180&&m1Age>=-60,m5Fresh=m5Age<=600&&m5Age>=-300;
+ const bias=a1.scoreUp>a1.scoreDn?'UP':a1.scoreDn>a1.scoreUp?'DOWN':'NONE';
+ let state='WAIT',dir='WAIT',reason=[];
+ if(!a5||!m5Fresh){reason.push('Contexto M5 indisponível ou desatualizado');}
+ else if(!m1Fresh){reason.push('Candle M1 fechado está desatualizado');}
+ else if(ctx.direction==='NEUTRAL'){reason.push('M5 sem tendência direcional clara');}
+ else if(a1.volatility?.blocked){reason.push('BLOQUEIO DE VOLATILIDADE: '+a1.volatility.reason);}
+ else if(bias==='NONE'||a1.score<3){reason.push('M1 abaixo do mínimo de formação (3/6)');}
+ else if(bias!==ctx.direction){reason.push('Conflito: direção do gatilho M1 diverge do contexto M5');}
+ else if(a1.dir===bias&&a1.score>=5){state='CONFIRMED';dir=bias;reason.push('ENTRADA ELEGÍVEL: M1 com '+a1.score+'/6 e alinhamento com M5');}
+ else {state='FORMING';reason.push('Pré-sinal '+a1.score+'/6: abaixo do mínimo de entrada 5/6; não enviar alerta de entrada');}
+ if(a1.reasons?.length)reason.push(...a1.reasons);
+ return{state,dir,reason,a1,a5,ctx,m1Fresh,m5Fresh,m1Age,m5Age,bias};
+}
+function drawMain(){
+ let b=cache[selected]?.[tf];if(!b||!mainChart)return;
+ let a=analyze(b);if(!a){$('priceMeta').textContent='Histórico insuficiente para indicadores (mínimo 210 candles).';return}
+ candleSeries.setData(b);
+ const line=(v)=>v.map((x,i)=>({time:b[i].time,value:x})).filter(x=>Number.isFinite(x.value));
+ emaSeries[0].setData(line(a.e9));emaSeries[1].setData(line(a.e21));emaSeries[2].setData(line(a.e200));
+ mainChart.timeScale().fitContent();
+ $('price').textContent=a.price.toPrecision(9);
+ $('priceMeta').textContent='Último candle fechado do gráfico: '+new Date(a.closedTime*1000).toLocaleString('pt-BR');
+ $('selected').textContent=selected;$('tfLabel').textContent=tf==='1min'?'M1':'M5';
+ $('rsi').textContent=a.r.toFixed(1);$('trend').textContent=a.e9[a.closedIndex]>a.e21[a.closedIndex]?'ALTA':'BAIXA';
+ $('trend').style.color=a.e9[a.closedIndex]>a.e21[a.closedIndex]?'var(--green)':'var(--red)';
+ $('atr').textContent=a.atr?.toPrecision(5)||'—';$('score').textContent=a.score+'/6';
+ const m=analyzeMTF(cache[selected]?.['1min'],cache[selected]?.['5min']);
+ renderMTF(m);renderSignal(selected,m);renderScanner();
+}
+function renderMTF(m){
+ const ctx=m?.ctx||{direction:'UNKNOWN',label:'DADOS PENDENTES',reason:'Aguardando dados M5'};
+ $('mtfContext').textContent=ctx.label;
+ $('mtfContext').style.color=ctx.direction==='UP'?'var(--green)':ctx.direction==='DOWN'?'var(--red)':'var(--gold)';
+ $('mtfContextMeta').textContent=ctx.reason;
+ const a1=m?.a1;
+ $('mtfTrigger').textContent=a1?(a1.scoreUp>a1.scoreDn?'UP':a1.scoreDn>a1.scoreUp?'DOWN':'SEM DIREÇÃO')+' • '+a1.score+'/6':'Aguardando M1';
+ $('mtfTrigger').style.color=a1?.scoreUp>a1?.scoreDn?'var(--green)':a1?.scoreDn>a1?.scoreUp?'var(--red)':'var(--gold)';
+ $('mtfTriggerMeta').textContent=a1?`RSI ${a1.r.toFixed(1)} • ${a1.volatility?.regime||'VOL N/D'} ${a1.volatility?.percentile==null?'':'P'+a1.volatility.percentile.toFixed(0)}`:'Necessário histórico M1';
+ $('mtfDecision').textContent=m?.state==='CONFIRMED'?(m.dir==='UP'?'UP CONFIRMADO':'DOWN CONFIRMADO'):m?.state==='FORMING'?'EM FORMAÇÃO':'AGUARDAR';
+ $('mtfDecision').style.color=m?.state==='CONFIRMED'?(m.dir==='UP'?'var(--green)':'var(--red)'):'var(--gold)';
+ $('mtfDecisionMeta').textContent=m?.reason?.slice(0,2).join(' • ')||'M5 filtra; M1 confirma';
+}
+function renderSignal(s,m){
+ $('sigAsset').textContent=s+' • M1 + M5';
+ const a=m?.a1,score=a?Math.max(a.scoreUp,a.scoreDn):0;
+ $('meter').style.width=Math.min(100,score/6*100)+'%';
+ $('sigFoot').textContent=a?`Confluência M1 ${score}/6 • mínimo exigido 5/6 • Contexto M5 ${m.ctx.label}. Pontuação não é probabilidade estatística.`:'Aguardando dados dos dois timeframes.';
+ $('sigReason').textContent=m?.reason?.join(' • ')||'Aguardando candles fechados M1 e M5.';
+ if(m?.state==='CONFIRMED'){
+  $('sigState').className='pill '+(m.dir==='UP'?'up':'down');$('sigState').textContent='MTF CONFIRMADO';
+  $('sigDirection').textContent=m.dir==='UP'?'UP — M1 alinhado ao contexto M5':'DOWN — M1 alinhado ao contexto M5';
+ }else{
+  $('sigState').className='pill wait';$('sigState').textContent=m?.state==='FORMING'?'EM FORMAÇÃO':'AGUARDAR';
+  $('sigDirection').textContent=m?.state==='FORMING'?'Configuração em desenvolvimento':'Sem entrada confirmada';
+ }
+}
+function renderScanner(){
+ const rows=SYMBOLS.map(symbol=>({symbol,m:analyzeMTF(cache[symbol]?.['1min'],cache[symbol]?.['5min'])}))
+ .sort((a,b)=>Math.max(b.m.a1?.scoreUp||0,b.m.a1?.scoreDn||0)-Math.max(a.m.a1?.scoreUp||0,a.m.a1?.scoreDn||0));
+ const eligible=rows.filter(x=>x.m.state==='CONFIRMED'&&x.m.a1?.score>=5);
+ $('scannerCount').textContent=eligible.length+' elegíveis';
+ $('scannerList').innerHTML=rows.map(x=>{const a=x.m.a1,sc=a?Math.max(a.scoreUp,a.scoreDn):0,ok=x.m.state==='CONFIRMED'&&sc>=5;
+ return `<div class="scanner-row"><b>${x.symbol}</b><span>${x.m.ctx?.label||'PENDENTE'}</span><span class="pill ${ok?(x.m.dir==='UP'?'up':'down'):'wait'}">${ok?x.m.dir:a?.volatility?.blocked?'VOL BLOQUEADA':sc>=3?'PRÉ-SINAL '+sc+'/6':sc+'/6'}</span></div>`}).join('');
+}
+function renderMini(s){
+ const b1=cache[s]?.['1min'],b5=cache[s]?.['5min'],chartBars=cache[s]?.[tf]||b1||b5;
+ if(!chartBars)return;
+ const m=analyzeMTF(b1,b5),key=s.replace('/','-');
+ $('px-'+key).textContent=chartBars.at(-1).close.toPrecision(7);
+ $('meta-'+key).textContent='M1 '+(b1?'OK':'—')+' • M5 '+(b5?'OK':'—');
+ let pill=$('pill-'+key);
+ pill.className='pill '+(m.state==='CONFIRMED'?(m.dir==='UP'?'up':'down'):'wait');
+ pill.textContent=m.state==='CONFIRMED'?m.dir:m.state==='FORMING'?'FORMANDO':m.ctx?.label||'PENDENTE';
+ let vals=chartBars.slice(-60).map(x=>({time:x.time,value:x.close}));
+ miniCharts[s].line.setData(vals);
+ miniCharts[s].line.applyOptions({color:m.state==='CONFIRMED'?(m.dir==='UP'?'#19c58b':'#ff6678'):'#70adff'});
+}
+async function fetchBars(symbol,interval){
+ let u=new URL('https://api.twelvedata.com/time_series');
+ u.searchParams.set('symbol',symbol);u.searchParams.set('interval',interval);
+ u.searchParams.set('outputsize','300');u.searchParams.set('timezone','UTC');u.searchParams.set('apikey',apiKey);
+ let r=await fetch(u);let j=await r.json();
+ if(!r.ok||j.status==='error'||!j.values)throw Error(j.message||'Falha Twelve Data');
+ return j.values.slice().reverse().map(v=>({time:Math.floor(new Date(v.datetime.replace(' ','T')+'Z').getTime()/1000),open:+v.open,high:+v.high,low:+v.low,close:+v.close}))
+  .filter(x=>Number.isFinite(x.time)&&Number.isFinite(x.open)&&Number.isFinite(x.high)&&Number.isFinite(x.low)&&Number.isFinite(x.close));
+}
+async function pause(ms){return new Promise(r=>setTimeout(r,ms))}
+async function scanCycle(){
+ if(busy||!apiKey)return;busy=true;let started=Date.now(),errors=[];
+ try{
+  status('CONSULTANDO M1 + CONTEXTO M5');
+  // M1: cinco consultas por ciclo. M5: um ativo por ciclo, distribuindo as chamadas
+  // para reduzir consumo de créditos REST e evitar rajadas de 10 chamadas/minuto.
+  for(const s of SYMBOLS){
+   try{
+    let b1=await fetchBars(s,'1min');
+    if(b1.length<210)throw Error('Histórico M1 insuficiente');
+    cache[s]??={};cache[s]['1min']=b1;await saveCandles(s,'1min',b1);
+    await pause(250);
+   }catch(e){errors.push(s+' M1: '+e.message)}
+  }
+  const m5Symbol=SYMBOLS[mtfCursor%SYMBOLS.length];
+  try{
+   let b5=await fetchBars(m5Symbol,'5min');
+   if(b5.length<210)throw Error('Histórico M5 insuficiente');
+   cache[m5Symbol]??={};cache[m5Symbol]['5min']=b5;await saveCandles(m5Symbol,'5min',b5);
+  }catch(e){errors.push(m5Symbol+' M5: '+e.message)}
+  mtfCursor=(mtfCursor+1)%SYMBOLS.length;
+  for(const s of SYMBOLS){
+   renderMini(s);
+   const m=analyzeMTF(cache[s]?.['1min'],cache[s]?.['5min']);
+   if(m.state==='CONFIRMED')await maybeAlert(s,m);
+  }
+  if(cache[selected]?.[tf])drawMain();renderScanner();
+  $('updated').textContent=new Date().toLocaleTimeString('pt-BR');
+  $('cycle').textContent='Ciclo MTF: '+Math.round((Date.now()-started)/1000)+'s • M5 '+m5Symbol;
+  status(errors.length?'CICLO COM AVISOS':'MONITORAMENTO MTF ATIVO',errors.length?'err':'ok');
+  if(errors.length)toast(errors.join(' | ').slice(0,240));
+ }finally{busy=false}
+}
+async function maybeAlert(s,m){
+ const a=m.a1;if(!a||m.state!=='CONFIRMED'||a.score<5||Math.max(a.scoreUp,a.scoreDn)<5)return;
+ let key=[s,'MTF',a.closedTime,m.dir].join('|');if(lastKeys.has(key))return;lastKeys.add(key);
+ let today=new Date().toLocaleDateString('pt-BR'),todayCount=latestSignals.filter(x=>x.day===today).length;
+ if(todayCount>=Number($('maxAlerts').value||12))return;
+ let item={time:new Date().toLocaleTimeString('pt-BR'),day:today,symbol:s,tf:'M1+M5',direction:m.dir,score:a.score,strategies:a.strategies.join(', '),reasons:m.reason,closedTime:a.closedTime,context:m.ctx.label,volatility:a.volatility?.regime,atrPercentile:a.volatility?.percentile};
+ latestSignals.unshift(item);latestSignals=latestSignals.slice(0,150);await put('signal',item);renderHistory();
+ $('count').textContent=latestSignals.length+' alertas';$('today').textContent=todayCount+1;
+ toast('Alerta MTF '+m.dir+' • '+s);if(soundOn)beep();
+ if('Notification'in window&&Notification.permission==='granted')new Notification('WOLF • '+m.dir+' '+s,{body:'M1 confirmado com contexto M5 | Confluência '+a.score+'/6 | Volatilidade '+(a.volatility?.regime||'N/D')});
+}
+
+function sessionUTC(ts){
+ const h=new Date(ts*1000).getUTCHours();
+ return h<7?'Ásia (00-06 UTC)':h<13?'Londres (07-12 UTC)':h<21?'Nova York (13-20 UTC)':'Fim do dia (21-23 UTC)';
+}
+function metricSet(trades,payout){
+ const n=trades.length,w=trades.filter(t=>t.outcome==='WIN').length,l=trades.filter(t=>t.outcome==='LOSS').length,ties=n-w-l;
+ const grossWin=trades.reduce((a,t)=>a+Math.max(0,t.net),0),grossLoss=Math.abs(trades.reduce((a,t)=>a+Math.min(0,t.net),0));
+ let eq=0,peak=0,dd=0;for(const t of trades){eq+=t.net;peak=Math.max(peak,eq);dd=Math.max(dd,peak-eq)}
+ const net=trades.reduce((a,t)=>a+t.net,0);
+ return{n,w,l,ties,winRate:n?w/n:0,expectancy:n?net/n:0,net,pf:grossLoss?grossWin/grossLoss:(grossWin?Infinity:0),maxDD:dd,breakeven:1/(1+payout)};
+}
+function buildHistoricalTrades(symbol,m1,m5,payout,expiry){
+ const out=[];if(!m1||!m5||m1.length<230||m5.length<60)return out;
+ let cursor=0,lastEntry=-1;
+ for(let i=210;i<m1.length-expiry-1;i++){
+  const signalTime=m1[i].time+60;
+  while(cursor<m5.length-2&&m5[cursor+1].time+300<=signalTime)cursor++;
+  const m5ClosedAt=m5[cursor]?.time+300;
+  if(!m5[cursor]||m5ClosedAt>signalTime||signalTime-m5ClosedAt>600)continue;
+  const a1=analyze(m1.slice(0,i+2)),a5=analyze(m5.slice(0,cursor+2));
+  if(!a1||!a5||a1.score<5||a1.volatility?.blocked)continue;
+  const ctx=m5Context(a5),dir=a1.scoreUp>a1.scoreDn?'UP':a1.scoreDn>a1.scoreUp?'DOWN':'NONE';
+  if(dir==='NONE'||dir!==ctx.direction||a1.dir!==dir)continue;
+  const entryIndex=i+1,exitIndex=i+expiry;
+  if(entryIndex<=lastEntry||!m1[entryIndex]||!m1[exitIndex])continue;
+  const entry=m1[entryIndex].open,exit=m1[exitIndex].close;
+  if(!Number.isFinite(entry)||!Number.isFinite(exit))continue;
+  const outcome=exit===entry?'TIE':((dir==='UP'&&exit>entry)||(dir==='DOWN'&&exit<entry))?'WIN':'LOSS';
+  out.push({symbol,dir,score:a1.score,outcome,net:outcome==='WIN'?payout:outcome==='LOSS'?-1:0,
+   signalTime,entryTime:m1[entryIndex].time,session:sessionUTC(signalTime),
+   volatility:a1.volatility?.regime||'UNKNOWN',atrPercentile:a1.volatility?.percentile});
+  lastEntry=exitIndex;
+ }
+ return out;
+}
+let lastBacktestReport=null;
+function runBacktest(){
+ const payout=Number($('btPayout').value)/100,expiry=Math.max(1,Math.min(5,Number($('btExpiry').value)||1));
+ if(!(payout>0&&payout<=1)){$('btNote').textContent='Informe payout entre 1% e 100%.';return}
+ let all=[],perAsset=[],allDev=0,allOos=0;
+ for(const symbol of SYMBOLS){
+  const bars=cache[symbol]||{},trades=buildHistoricalTrades(symbol,bars['1min'],bars['5min'],payout,expiry);
+  const cut=Math.floor(trades.length*.7),dev=trades.slice(0,cut),oos=trades.slice(cut);
+  const dm=metricSet(dev,payout),om=metricSet(oos,payout);
+  perAsset.push({symbol,total:trades.length,dev:dm,oos:om});
+  all.push(...oos);allDev+=dev.length;allOos+=oos.length;
+ }
+ all.sort((a,b)=>a.entryTime-b.entryTime);
+ const m=metricSet(all,payout),totalTrades=perAsset.reduce((n,x)=>n+x.total,0);
+ $('btTrades').textContent=m.n;$('btWin').textContent=m.n?(m.winRate*100).toFixed(1)+'%':'—';
+ $('btExpect').textContent=m.n?m.expectancy.toFixed(3):'—';
+ $('btPF').textContent=m.n?(Number.isFinite(m.pf)?m.pf.toFixed(2):'∞'):'—';
+ $('btDD').textContent=m.n?m.maxDD.toFixed(2):'—';$('btNet').textContent=m.n?m.net.toFixed(2):'—';
+ $('btBE').textContent=(m.breakeven*100).toFixed(1)+'%';
+ $('btAssets').textContent=perAsset.filter(x=>x.total>0).length+'/5';
+ $('btByAsset').innerHTML=perAsset.map(x=>`<tr><td>${x.symbol}</td><td>${x.oos.n}</td><td>${x.oos.n?(x.oos.winRate*100).toFixed(1)+'%':'—'}</td><td>${x.oos.n?x.oos.expectancy.toFixed(3):'—'}</td><td>${x.oos.n?(Number.isFinite(x.oos.pf)?x.oos.pf.toFixed(2):'∞'):'—'}</td></tr>`).join('');
+ const sessions={};for(const t of all)(sessions[t.session]??=[]).push(t);
+ const regimes={};for(const t of all)(regimes[t.volatility]??=[]).push(t);
+ const groupMetrics=obj=>Object.fromEntries(Object.entries(obj).map(([k,v])=>[k,metricSet(v,payout)]));
+ lastBacktestReport={createdAt:new Date().toISOString(),payout,expiry,method:'Chronological 70/30 split; signal after closed candle; entry next candle open; expiry candle close; M1/M5 no-lookahead alignment; non-overlapping trades; extreme ATR percentile blocked.',totalTrades,developmentTrades:allDev,outOfSampleTrades:allOos,oos:m,perAsset,sessions:groupMetrics(sessions),volatilityRegimes:groupMetrics(regimes),trades:all};
+ $('btNote').textContent=totalTrades?`Amostra total ${totalTrades} sinais elegíveis; desenvolvimento ${allDev}; fora da amostra ${allOos}. OOS agregado: ${m.w} vitórias, ${m.l} derrotas e ${m.ties} empates. UTC usado para sessões. Amostra pequena ou poucos trades por ativo não permitem conclusão confiável.`:'Nenhum trade passou por 5/6 + M5 alinhado + filtro de volatilidade. Verifique histórico disponível e sincronização temporal.';
+ $('btNote').textContent+=' A divisão 70/30 é por ordem cronológica dentro de cada ativo; não é walk-forward completo e não elimina viés de seleção.';
+}
+function exportBacktestCSV(){
+ if(!lastBacktestReport){$('btNote').textContent='Execute a validação antes de exportar.';return}
+ const r=lastBacktestReport,rows=[['WOLF Evidence Lab','V5'],['Gerado',r.createdAt],['Método',r.method],['Payout',r.payout],['Expiração min',r.expiry],[],['Ativo','Trades OOS','Wins','Losses','Ties','Win rate','Expectativa','Profit Factor','Max Drawdown']];
+ for(const x of r.perAsset)rows.push([x.symbol,x.oos.n,x.oos.w,x.oos.l,x.oos.ties,x.oos.winRate,x.oos.expectancy,x.oos.pf,x.oos.maxDD]);
+ rows.push([],['Sessão UTC','Trades','Win rate','Expectativa','Profit Factor']);
+ for(const [k,v] of Object.entries(r.sessions))rows.push([k,v.n,v.winRate,v.expectancy,v.pf]);
+ rows.push([],['Regime volatilidade','Trades','Win rate','Expectativa','Profit Factor']);
+ for(const [k,v] of Object.entries(r.volatilityRegimes))rows.push([k,v.n,v.winRate,v.expectancy,v.pf]);
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(';')).join('\r\n');
+ const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='wolf_evidence_report_'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(url);
+}
+function weeklySummary(){
+ const now=Date.now(),week=latestSignals.filter(x=>now-new Date(x.closedTime*1000).getTime()<=7*86400000);
+ const lines=week.reduce((a,x)=>{const k=x.symbol;(a[k]??={n:0,up:0,down:0,score:0})[x.direction==='UP'?'up':'down']++;a[k].n++;a[k].score+=Number(x.score)||0;return a},{});
+ $('weeklyNote').textContent=week.length?`Últimos 7 dias: ${week.length} alertas qualificados. `+Object.entries(lines).map(([k,v])=>`${k}: ${v.n} sinais (${v.up} UP/${v.down} DOWN), média ${(v.score/v.n).toFixed(1)}/6`).join(' • '):'Nenhum alerta qualificado registrado nos últimos 7 dias.';
+}
+function compareBrokerQuote(){
+ const ext=Number($('brokerQuote').value),ref=cache[selected]?.[tf]?.at(-2)?.close;
+ if(!(ext>0)||!(ref>0)){$('quoteNote').textContent='Informe uma cotação válida e carregue candles do ativo selecionado.';return}
+ const delta=(ext-ref)/ref*100;
+ $('refQuote').textContent=ref.toPrecision(10);$('quoteDelta').textContent=(delta>=0?'+':'')+delta.toFixed(4)+'%';
+ $('quoteNote').textContent='Comparação pontual manual para '+selected+'. Diferença absoluta '+Math.abs(ext-ref).toPrecision(8)+'. Verifique se os símbolos, tipo de ativo (spot/OTC), horário e convenção de preço são equivalentes antes de interpretar a divergência.';
+}
+function beep(){try{let c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=760;g.gain.value=.035;o.start();o.stop(c.currentTime+.18)}catch(e){}}
+function renderHistory(){ $('history').innerHTML=latestSignals.slice(0,40).map(x=>`<tr><td>${x.time}</td><td>${x.symbol}</td><td>${x.tf}</td><td class="${x.direction==='UP'?'uptext':'downtext'}">${x.direction}</td><td>${x.strategies}</td><td>${x.score}/6</td></tr>`).join('')||'<tr><td colspan="6" class="muted">Nenhum alerta registrado.</td></tr>';$('count').textContent=latestSignals.length+' alertas';$('today').textContent=latestSignals.filter(x=>x.day===new Date().toLocaleDateString('pt-BR')).length}
+function selectAsset(s){selected=s;document.querySelectorAll('.asset').forEach(x=>x.classList.toggle('selected',x.dataset.asset===s));$('selected').textContent=s;drawMain()}
+async function start(){if(!apiKey){toast('Informe sua API Key Twelve Data.');return}if(running)return;running=true;$('scan').textContent='Pausar monitoramento';await scanCycle();timer=setInterval(scanCycle,60000)}function stop(){running=false;if(timer)clearInterval(timer);timer=null;$('scan').textContent='Iniciar monitoramento';status('MONITORAMENTO PAUSADO')}
+$('scan').onclick=()=>running?stop():start();$('runBacktest').onclick=runBacktest;$('exportReport').onclick=exportBacktestCSV;$('weeklyReport').onclick=weeklySummary;$('compareQuote').onclick=compareBrokerQuote;$('tf').onchange=()=>{tf=$('tf').value;$('tfLabel').textContent=tf==='1min'?'M1':'M5';drawMain();for(const s of SYMBOLS)renderMini(s)};$('save').onclick=async()=>{let k=$('key').value.trim();if(!k)return toast('Informe uma chave.');apiKey=k;await put('setting',{apiKey:k});toast('Chave salva no IndexedDB deste navegador.');status('CHAVE CONFIGURADA')};$('notify').onclick=async()=>{if(!('Notification'in window))return toast('Este navegador não oferece notificações.');let p=await Notification.requestPermission();toast('Permissão de notificações: '+p)};$('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent='Som: '+(soundOn?'ligado':'desligado');if(soundOn)beep()};$('clear').onclick=async()=>{if(confirm('Apagar o histórico de alertas local?')){await clearType('signal');latestSignals=[];lastKeys.clear();renderHistory()}};
+(async()=>{try{await openDB();let settings=await getAll('setting');if(settings.length){apiKey=settings.at(-1).apiKey;$('key').value='';$('key').placeholder=apiKey?'Chave salva neste navegador — digite outra para substituir':'API Key'}latestSignals=await getAll('signal');latestSignals.sort((a,b)=>b.closedTime-a.closedTime);latestSignals=latestSignals.filter(x=>Number(x.score)>=5).slice(0,150);latestSignals.forEach(x=>lastKeys.add([x.symbol,'MTF',x.closedTime,x.direction].join('|')));let stored=await getAll('candles');stored.forEach(x=>{cache[x.symbol]??={};cache[x.symbol][x.interval]=x.bars});renderAssets();makeMain();renderHistory();for(const s of SYMBOLS)renderMini(s);if(cache[selected]?.[tf])drawMain();renderScanner();status('BANCO LOCAL PRONTO','ok')}catch(e){toast('Falha ao iniciar IndexedDB: '+e.message)}})();
+})();
+</script></body></html>
